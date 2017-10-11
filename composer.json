@@ -1,39 +1,31 @@
 {
-	"name": "mosaika/radbundle",
-	"description": "",
-	"type": "symfony-bundle",
-	"authors": [
-		{
-			"name": "Andrea Pinti",
-			"email": "a.pinti@mosaika.it"
+	"name" : "mosaika/radbundle",
+	"type" : "symfony-bundle",
+	"authors" : [{
+			"name" : "Andrea Pinti",
+			"email" : "a.pinti@mosaika.it"
 		}
 	],
-	"keywords": [
+	"keywords" : [
 		"symfony",
 		"scaffold",
 		"bundle",
 		"rad"
 	],
-	"license": [
-		"MIT"
-	],
-	"require": {
-		
-	},
-	"autoload": {
-		"psr-0": {
-			"Mosaika\\RadBundle": ""
+	"license" : "MIT",
+	"autoload" : {
+		"psr-0" : {
+			"Mosaika\\RadBundle" : ""
 		}
 	},
-	"target-dir": "Company/DemoBundle",
-	"repositories": [
-		{
-			
+	"target-dir" : "Mosaika/RadBundle",
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "some_version-dev"
 		}
-	],
-	"extra": {
-		"branch-alias": {
-			"dev-master": "some_version-dev"
-		}
-	}
+	},
+	"require" : {
+		"nette/php-generator" : "~3.1"
+	},
+	"homepage" : "http://www.mosaika.it"
 }
