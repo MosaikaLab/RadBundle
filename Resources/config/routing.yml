@@ -1,0 +1,3 @@
+mosaika_rad_homepage:
+    path:     /
+    defaults: { _controller: MosaikaRadBundle:Default:index }
