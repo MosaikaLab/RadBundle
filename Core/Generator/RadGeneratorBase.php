@@ -21,7 +21,7 @@ class RadGeneratorBase {
 
 
 	/**
-	 * @return the $vendor
+	 * @return string
 	 */
 	public function getVendor()
 	{
@@ -29,7 +29,7 @@ class RadGeneratorBase {
 	}
 	
 	/**
-	 * @param field_type $vendor
+	 * @param string $vendor
 	 */
 	public function setVendor($vendor)
 	{
@@ -89,6 +89,10 @@ class RadGeneratorBase {
 	    return $res;
 	    
 	}
+	/**
+	 * @deprecated
+	 * @return string
+	 */
 	public function getFullNameSpace(){
 		//TODO Qua non va bene, il namespace � un'opzione che per� non deve necessariamente precedere la cartella "Entity"
 		// Potrebbe invece essere una cosa tipo VENDOR/BUNDLE/ENTITY/NAMESPACE

@@ -1,7 +1,6 @@
 <?php
 namespace Mosaika\RadBundle\Core\Generator;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Mosaika\RadBundle\Model\RadEntity;
 class RadGenerator{
     protected $container;

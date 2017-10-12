@@ -2,7 +2,6 @@
 namespace Mosaika\RadBundle\Model;
 
 use Mosaika\RadBundle\Utils\GeneratorUtils;
-use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\ClassType;
 
 class RadEntityField{

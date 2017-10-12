@@ -33,7 +33,7 @@ class BuildEvent extends Event{
     
 
     /**
-     * @return the $output
+     * @return \Symfony\Component\Console\Output\OutputInterface
      */
     public function getOutput()
     {
@@ -49,7 +49,7 @@ class BuildEvent extends Event{
     }
 
  /**
-     * @return the $input
+     * @return \Symfony\Component\Console\Input\InputInterface
      */
     public function getInput()
     {

@@ -39,40 +39,42 @@ class EntityGeneratorTest extends KernelTestCase
         $bundle = "AppBundle";
         $entityNs = "\\AppBundle\\Entity\\";
         
+        $entities = [];
+        
+        // Post Category
+        $entities["category"] = RadEntity::create("Category","")
+        ->setTableName("category")
+        ->addField(IdField::create("id"))
+        ->addField(StringField::create("title")->setDefaultValue("Prova"))
+        ->addField(ManyToOneField::create("posts",$entityNs . "Post", "category"))
+        ;
+        
+        // Post
+        $entities["post"] = RadEntity::create("Post","")
+        ->setTableName("post")
+        ->addField(IdField::create("id"))
+        ->addField(StringField::create("title"))
+        ->addField(TextField::create("content"))
+        ->addField(IntegerField::create("fieldInteger"))
+        ->addField(FloatField::create("fieldFloat"))
+        ->addField(DecimalField::create("fieldDecimal"))
+        ->addField(DateField::create("fieldDate"))
+        ->addField(DateTimeField::create("fieldDatetime"))
+        ->addField(JsonField::create("params"))
+        ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
+        
+        ->createRepository()
+        ->getEntity()
+        ;
+        
+        
         $generator
         ->setTablePrefix("app_")
         ->setBundle($bundle)
-        
-        // Test Entity
-        ->addEntity(
-            RadEntity::create("Category","")
-            ->setTableName("category")
-            ->addField(IdField::create("id"))
-            ->addField(StringField::create("title")->setDefaultValue("Prova"))
-            ->addField(ManyToOneField::create("posts",$entityNs . "Post", "category"))
-            )
-            
-            // Test Entity
-        ->addEntity(
-            RadEntity::create("Post","")
-                ->setTableName("post")
-                ->addField(IdField::create("id"))
-                ->addField(StringField::create("title"))
-                ->addField(TextField::create("content"))
-                ->addField(IntegerField::create("fieldInteger"))
-                ->addField(FloatField::create("fieldFloat"))
-                ->addField(DecimalField::create("fieldDecimal"))
-                ->addField(DateField::create("fieldDate"))
-                ->addField(DateTimeField::create("fieldDatetime"))
-                ->addField(JsonField::create("params"))
-                ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
-            
-                ->createRepository()
-	        		->getEntity()
-            )
-            
-            
         ;
+        foreach($entities as $e){
+        		$generator->addEntity($e);
+        }
         
         $generator->commit();
         

@@ -2,7 +2,6 @@
 namespace Mosaika\RadBundle\Model\Field;
 
 use Mosaika\RadBundle\Model\RadEntityField;
-use Nette\PhpGenerator\ClassType;
 
 class OneToManyField extends RadEntityField{
 
