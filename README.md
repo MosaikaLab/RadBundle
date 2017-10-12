@@ -55,7 +55,7 @@ Step 1: Register the Event Listener
 ```yml
 # app/config/services.yml
 services:
-	app.rad_build_listener:
+    app.rad_build_listener:
         class: AppBundle\EventListener\RadBuildListener
         tags:
             - { name: kernel.event_listener, event: rad.build }
