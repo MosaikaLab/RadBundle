@@ -2,13 +2,10 @@
 namespace Mosaika\RadBundle\Factory;
 
 use Mosaika\RadBundle\Model\RadEntityField;
+use Mosaika\RadBundle\Model\Field\IdField;
 
 class RadEntityFieldFactory
 {
-    
-    public static function id($name="id"){
-        return new RadEntityField($name, "id");
-    }
     
     public static function string($name, $length=255){
         return new RadEntityField($name, "string");

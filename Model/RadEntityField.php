@@ -1,6 +1,10 @@
 <?php
 namespace Mosaika\RadBundle\Model;
 
+use Mosaika\RadBundle\Utils\GeneratorUtils;
+use Nette\PhpGenerator\Method;
+use Nette\PhpGenerator\ClassType;
+
 class RadEntityField{
     
     protected $name;
@@ -11,12 +15,46 @@ class RadEntityField{
     
     protected $nullable=true;
     
+    protected $defaultValue;
+    
+    public function getAnnotations(){
+        return [];
+    }
+    public function getPhpType(){
+        return $this->type;
+    }
+    /**
+     * @param ClassType $modelClass
+     */
+    public function getMethods($modelClass){
+        $name = $this->name;
+        $classFullName = "\\" . $modelClass->getNamespace()->getName() . "\\" . $modelClass->getName();
+        
+        $setter = $modelClass->addMethod(GeneratorUtils::propertyToMethod(ucfirst($name),"set"));
+        $setter->addParameter($name);
+        $setter->addComment("@return " . $classFullName);
+        $setter->setReturnType($classFullName);
+        $setter->addBody(sprintf('$this->%s = $%s;',$name, $name));
+        $setter->addBody('return $this;');
+        ;
+        
+        $getter = $modelClass->addMethod(GeneratorUtils::propertyToMethod(ucfirst($name),"get"));
+        $getter->addComment("@return " . $this->getPhpType());
+        $getter->addBody(sprintf('return $this->%s;',$name));
+        ;
+        return [$setter,$getter];
+    }
+    
     public function  __construct($name, $type, $args=array()){
         $this->name = $name;
         $this->type = $type;
         $this->args = $args;
     }
     
+    public function getDoctrineColumnAnnotation(){
+        
+        return sprintf('@Doctrine\\ORM\\Mapping\\Column(name="%s",type="%s",nullable=%s)',GeneratorUtils::propertyToDb($this->name),$this->type,$this->nullable ? "true" : "false");
+    }
     
     public function setNullable($nullable){
         $this->nullable = $nullable;
@@ -92,6 +130,25 @@ class RadEntityField{
     public function getNullable(){
         return $this->nullable;
     }
+    /**
+     * @return mixed
+     */
+    public function getDefaultValue(){
+        if(is_string($this->defaultValue)){
+            return var_dump($this->defaultValue, true);
+        }
+        return $this->defaultValue;
+    }
+
+    /**
+     * @param mixed $defaultValue
+     * @return \Mosaika\RadBundle\Model\RadEntityField
+     */
+    public function setDefaultValue($defaultValue){
+        $this->defaultValue = $defaultValue;
+        return $this;
+    }
+
 
     
 }

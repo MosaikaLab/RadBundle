@@ -22,9 +22,7 @@ class RadGenerator{
     public function __construct($container){
         $this->container = $container;
         $this->entities = [];
-        $this->services = new ArrayCollection();
-        $this->serviceTypes = new ArrayCollection();
-        $this->cruds = new ArrayCollection();
+        
     }
     /**
      * 
@@ -41,6 +39,9 @@ class RadGenerator{
      */
     public function addEntity($e){
         $this->entities[] = $e;
+        if($this->tablePrefix){
+	        	$e->setTableName($this->tablePrefix . $e->getTableName());
+        }
         return $this;
     }
     

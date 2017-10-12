@@ -1,7 +1,7 @@
 <?php
-namespace Mosaika\RadBundle\Core;
+namespace Mosaika\RadBundle\Utils;
 
-class GrammarUtils{
+class GeneratorUtils{
 	public static function dbToProperty($dbName){
 		$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $dbName)));
 		return $str;

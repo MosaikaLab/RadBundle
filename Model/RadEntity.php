@@ -10,6 +10,12 @@ class RadEntity{
     
     protected $name;
     
+    protected $lifeCycle;
+    
+    /**
+     * @var RadEntityRepository
+     */
+    protected $repository;
     
     
     public static function create($name, $namespace, $bundle=null){
@@ -83,7 +89,54 @@ class RadEntity{
         $this->name = $name;
         return $this;
     }
+    /**
+     * @return boolean
+     */
+    public function getLifeCycle(){
+        return $this->lifeCycle;
+    }
 
+    /**
+     * @param boolean $lifeCycle
+     */
+    public function setLifeCycle($lifeCycle){
+        $this->lifeCycle = $lifeCycle;
+    }
+
+    /**
+     * @param multitype: $fields
+     * @return RadEntity
+     */
+    public function setFields($fields){
+        $this->fields = $fields;
+        return $this;
+    }
+    
+    /**
+     * @return \Mosaika\RadBundle\Model\RadEntityRepository
+     */
+    public function getRepository(){
+        return $this->repository;
+    }
+
+    /**
+     * @param \Mosaika\RadBundle\Model\RadEntityRepository $repository
+     * @return RadEntity
+     */
+    public function setRepository($repository){
+        $this->repository = $repository;
+        return $this;
+    }
+    /**
+     * 
+     * @return \Mosaika\RadBundle\Model\RadEntityRepository
+     */
+    public function createRepository(){
+        $this->repository = new RadEntityRepository($this);
+        return $this->repository;
+    }
+
+    
     
 }
 
