@@ -66,59 +66,70 @@ Step 2: Write the Listener
 
 
 ```php
-<?php
+<?php 
 // src/AppBundle/EventListener/RadBuildListener.php
 namespace AppBundle\EventListener;
 use Mosaika\RadBundle\Event\BuildEvent;
+use Mosaika\RadBundle\Model\RadEntity;
+use Mosaika\RadBundle\Model\Field\IdField;
+use Mosaika\RadBundle\Model\Field\StringField;
+use Mosaika\RadBundle\Model\Field\ManyToOneField;
+use Mosaika\RadBundle\Model\Field\IntegerField;
+use Mosaika\RadBundle\Model\Field\TextField;
+use Mosaika\RadBundle\Model\Field\FloatField;
+use Mosaika\RadBundle\Model\Field\DecimalField;
+use Mosaika\RadBundle\Model\Field\DateField;
+use Mosaika\RadBundle\Model\Field\DateTimeField;
+use Mosaika\RadBundle\Model\Field\JsonField;
+use Mosaika\RadBundle\Model\Field\OneToManyField;
 
 class RadBuildListener
 {
-	
 	public function onRadBuild(BuildEvent $event){
 		$generator = $event->getGenerator();
-		
 
-    
 	    $bundle = "AppBundle";	// The bundle you are working on
 	    $entityNs = "\\AppBundle\\Entity\\";	
 	    
+	    $entities = [];
+	    
+	    // Post Category
+	    $entities["category"] = RadEntity::create("Category","")
+	    ->setTableName("category")
+	    ->addField(IdField::create("id"))
+	    ->addField(StringField::create("title")->setDefaultValue("Prova"))
+	    ->addField(ManyToOneField::create("posts",$entityNs . "Post", "category"))
+	    ;
+	    
+	    // Post
+	    $entities["post"] = RadEntity::create("Post","")
+	    ->setTableName("post")
+	    ->addField(IdField::create("id"))
+	    ->addField(StringField::create("title"))
+	    ->addField(TextField::create("content"))
+	    ->addField(IntegerField::create("fieldInteger"))
+	    ->addField(FloatField::create("fieldFloat"))
+	    ->addField(DecimalField::create("fieldDecimal"))
+	    ->addField(DateField::create("fieldDate"))
+	    ->addField(DateTimeField::create("fieldDatetime"))
+	    ->addField(JsonField::create("params"))
+	    ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
+	    
+	    ->createRepository()
+	    ->getEntity()
+	    ;
+	    
+	    
 	    $generator
-	    ->setTablePrefix("app_")	// Defines a global table prefix
-	    ->setBundle($bundle)	// Defines the bundle name
-	    
-	    // Test Entity
-	    ->addEntity(
-	        RadEntity::create("Category","")
-	        ->setTableName("category")	// Without prefix, it will be added automatically
-	        ->addField(IdField::create("id"))	// ID Field Example
-	        ->addField(StringField::create("title")->setDefaultValue("Unamed Category")) 
-	        ->addField(ManyToOneField::create("posts",$entityNs . "Post", "category"))
-	        )
-	        
-	        // Test Entity
-	    ->addEntity(
-	        RadEntity::create("Post","")
-	         ->setTableName("post")
-	        ->addField(IdField::create("id"))
-	        ->addField(StringField::create("title"))
-	        ->addField(TextField::create("content"))
-	        ->addField(IntegerField::create("fieldInteger"))
-	        ->addField(FloatField::create("fieldFloat"))
-	        ->addField(DecimalField::create("fieldDecimal"))
-	        ->addField(DateField::create("fieldDate"))
-	        ->addField(DateTimeField::create("fieldDatetime"))
-	        ->addField(JsonField::create("params"))
-	        ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
-	    
-	    		// We also create a Repository for this entity 
-	        ->createRepository()
-	        
-	        // Then return the Entity to the "addEntity" method
-	    		->getEntity()
-	        )
-	        ;
+	    ->setTablePrefix("app_")
+	    ->setBundle($bundle)
+	    ;
+	    foreach($entities as $e){
+	    		$generator->addEntity($e);
+	    }
 	 }
 }
+
 ```
 
 Step 3: Run the generator
