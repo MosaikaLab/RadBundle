@@ -46,8 +46,8 @@ class AppKernel extends Kernel
 ```
 
 
-
-Step 3: Usage
+Usage
+============
 -------------------------
 
 ```php
@@ -73,24 +73,23 @@ Step 3: Usage
         // Test Entity
     ->addEntity(
         RadEntity::create("Post","")
-            ->setTableName("post")
-            ->addField(IdField::create("id"))
-            ->addField(StringField::create("title"))
-            ->addField(TextField::create("content"))
-            ->addField(IntegerField::create("fieldInteger"))
-            ->addField(FloatField::create("fieldFloat"))
-            ->addField(DecimalField::create("fieldDecimal"))
-            ->addField(DateField::create("fieldDate"))
-            ->addField(DateTimeField::create("fieldDatetime"))
-            ->addField(JsonField::create("params"))
-            ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
-        
-            ->createRepository()
-        		->getEntity()
-        )
-        
-        
-    ;
+         ->setTableName("post")
+        ->addField(IdField::create("id"))
+        ->addField(StringField::create("title"))
+        ->addField(TextField::create("content"))
+        ->addField(IntegerField::create("fieldInteger"))
+        ->addField(FloatField::create("fieldFloat"))
+        ->addField(DecimalField::create("fieldDecimal"))
+        ->addField(DateField::create("fieldDate"))
+        ->addField(DateTimeField::create("fieldDatetime"))
+        ->addField(JsonField::create("params"))
+        ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
     
-    $generator->commit();
+    		// We also create a Repository for this entity 
+        ->createRepository()
+        
+        // Then return the Entity to the "addEntity" method
+    		->getEntity()
+        )
+    ;
 ```

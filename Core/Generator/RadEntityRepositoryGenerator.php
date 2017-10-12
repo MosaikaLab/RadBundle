@@ -2,11 +2,8 @@
 namespace Mosaika\RadBundle\Core\Generator;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
-use Mosaika\RadBundle\Model\RadEntity;
-use Mosaika\RadBundle\Utils\GeneratorUtils;
 use Mosaika\RadBundle\Model\RadEntityRepository;
 
 class RadEntityRepositoryGenerator extends RadGeneratorBase {
@@ -51,13 +48,14 @@ class RadEntityRepositoryGenerator extends RadGeneratorBase {
 	    file_put_contents(
 	    		$modelPath,
 	    		"<?php" . PHP_EOL . $modelNs . $modelClass
-	    		);
+	    	);
+	    
 	    if(!file_exists($repoPath)){
-	    	// Write Entity class
-	    	file_put_contents(
+		    	// Write Entity class
+		    	file_put_contents(
 	    			$repoPath,
 	    			"<?php" . PHP_EOL . $repoNs . $repoClass
-	    			);
+	    		);
 	    }
 	    
 	}

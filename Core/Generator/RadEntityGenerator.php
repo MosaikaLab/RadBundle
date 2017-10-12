@@ -94,15 +94,15 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    $entityPath = $entityDir. $entityClass->getName() . ".php";
 	    
 	    // Create Repository
+	    $repositoryClass = null;
 	    if($entity->getRepository()){
 	    		$repoGenerator = RadEntityRepositoryGenerator::get($this->container);
 		    	$repoGenerator->setBundle($this->getBundle());
 		    	$repoGenerator->commit($entity->getRepository());
 		    	$fullclass = $entityNs->getName() . "\\" . $entityClass->getName() . "Repository";
-	    		$entityClass->addComment(
-	    				sprintf('@Doctrine\ORM\Mapping\Entity(repositoryClass="%s")',$fullclass)
-			);
+		    	$repositoryClass = sprintf('repositoryClass="%s"',$fullclass);
 	    }
+	    $entityClass->addComment(sprintf('@Doctrine\ORM\Mapping\Entity(%s)',$repositoryClass));
 	    
 	    // Write Model class
 	    file_put_contents(
@@ -120,7 +120,6 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    echo "Rad entity commit: " . $entityPath . PHP_EOL;
 	    echo "Rad model commit: " . $modelPath . PHP_EOL;
         
-	    
         return $this;
 	}
 
