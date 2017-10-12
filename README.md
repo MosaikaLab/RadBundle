@@ -44,3 +44,53 @@ class AppKernel extends Kernel
     // ...
 }
 ```
+
+
+
+Step 3: Usage
+-------------------------
+
+```php
+<?php
+    $generator = new RadGenerator($this->container); //TODO: add as a service
+    
+    $bundle = "AppBundle";	// The bundle you are working on
+    $entityNs = "\\AppBundle\\Entity\\";	
+    
+    $generator
+    ->setTablePrefix("app_")	// Defines a global table prefix
+    ->setBundle($bundle)	// Defines the bundle name
+    
+    // Test Entity
+    ->addEntity(
+        RadEntity::create("Category","")
+        ->setTableName("category")	// Without prefix, it will be added automatically
+        ->addField(IdField::create("id"))	// ID Field Example
+        ->addField(StringField::create("title")->setDefaultValue("Unamed Category")) 
+        ->addField(ManyToOneField::create("posts",$entityNs . "Post", "category"))
+        )
+        
+        // Test Entity
+    ->addEntity(
+        RadEntity::create("Post","")
+            ->setTableName("post")
+            ->addField(IdField::create("id"))
+            ->addField(StringField::create("title"))
+            ->addField(TextField::create("content"))
+            ->addField(IntegerField::create("fieldInteger"))
+            ->addField(FloatField::create("fieldFloat"))
+            ->addField(DecimalField::create("fieldDecimal"))
+            ->addField(DateField::create("fieldDate"))
+            ->addField(DateTimeField::create("fieldDatetime"))
+            ->addField(JsonField::create("params"))
+            ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
+        
+            ->createRepository()
+        		->getEntity()
+        )
+        
+        
+    ;
+    
+    $generator->commit();
+```
