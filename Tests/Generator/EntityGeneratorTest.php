@@ -17,6 +17,9 @@ use Mosaika\RadBundle\Model\Field\FloatField;
 use Mosaika\RadBundle\Model\Field\DecimalField;
 use Mosaika\RadBundle\Model\Field\DateField;
 use Mosaika\RadBundle\Model\Field\DateTimeField;
+use Mosaika\RadBundle\Model\RadController;
+use Mosaika\RadBundle\Model\RadControllerAction;
+use Mosaika\RadBundle\Model\Controller\CrudController;
 
 class EntityGeneratorTest extends KernelTestCase
 {
@@ -67,13 +70,26 @@ class EntityGeneratorTest extends KernelTestCase
         ->getEntity()
         ;
         
+        $controllers = [];
+        $controllers["api.post"] = (new RadController("Post", "Api"))
+        	->setBaseUrl("api/post/")
+        	->setBaseRoute("api_post")
+        	->addAction(
+        		RadControllerAction::create("list")		
+        	)
+        ;
+        
         
         $generator
         ->setTablePrefix("app_")
         ->setBundle($bundle)
         ;
         foreach($entities as $e){
-        		$generator->addEntity($e);
+        	$generator->addController((new CrudController(null, "api"))->setEntity($e)->setContainer($this->container));
+        	$generator->addEntity($e);
+        }
+        foreach($controllers as $controller){
+        	$generator->addController($controller);
         }
         
         $generator->commit();

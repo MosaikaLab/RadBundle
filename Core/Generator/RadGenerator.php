@@ -2,10 +2,13 @@
 namespace Mosaika\RadBundle\Core\Generator;
 
 use Mosaika\RadBundle\Model\RadEntity;
+use Mosaika\RadBundle\Model\RadController;
 class RadGenerator{
     protected $container;
-    
+
     protected $entities;
+    
+    protected $controllers;
 
     protected $services;
     
@@ -21,6 +24,7 @@ class RadGenerator{
     public function __construct($container){
         $this->container = $container;
         $this->entities = [];
+        $this->controllers = [];
         
     }
     /**
@@ -32,16 +36,26 @@ class RadGenerator{
         return $this;
     }
     /**
+     * Add controller to generator
+     * @param RadController $e
+     * @return \Mosaika\RadBundle\Core\Generator\RadGenerator
+     */
+    public function addController($controller){
+        $this->controllers[] = $controller;
+        return $this;
+    }
+
+    /**
      * Add entity to generator
      * @param RadEntity $e
      * @return \Mosaika\RadBundle\Core\Generator\RadGenerator
      */
     public function addEntity($e){
-        $this->entities[] = $e;
-        if($this->tablePrefix){
-	        	$e->setTableName($this->tablePrefix . $e->getTableName());
-        }
-        return $this;
+    	$this->entities[] = $e;
+    	if($this->tablePrefix){
+    		$e->setTableName($this->tablePrefix . $e->getTableName());
+    	}
+    	return $this;
     }
     
     public function tableName($name){
@@ -50,6 +64,7 @@ class RadGenerator{
     
     public function commit(){
         $this->_commit(RadEntityGenerator::get($this->container), $this->entities);
+        $this->_commit(RadControllerGenerator::get($this->container), $this->controllers);
     }
     
     public function _commit($generator, $collection){
