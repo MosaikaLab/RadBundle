@@ -4,7 +4,7 @@ namespace Mosaika\RadBundle\Model\Field;
 
 use Nette\PhpGenerator\ClassType;
 
-class JsonField extends FloatField{
+class JsonField extends TextField{
     
     public static function create($name){
         return new self($name,"text");
