@@ -5,7 +5,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 use Mosaika\RadBundle\Model\RadEntityRepository;
-use Mosaika\RadBundle\Model\Query\RadQuery;
 use Mosaika\RadBundle\Model\Query\RadQueryFilter;
 
 class RadEntityRepositoryGenerator extends RadGeneratorBase {
@@ -20,6 +19,32 @@ class RadEntityRepositoryGenerator extends RadGeneratorBase {
 		->setBaseNamespace("Entity")
 		->setContainer($container)
 		;
+	}
+	/**
+	 *
+	 * @param RadQueryFilter $filter
+	 */
+	protected function evalFilterSql($filter,$key){
+		$operator = str_replace("%","",$filter->getOperator());
+		$left = $filter->getScope();
+		$right = ":" . $key;
+		return implode(" ",[$left,$operator,$right]);
+	}
+	/**
+	 *
+	 * @param RadQueryFilter $filter
+	 */
+	protected function evalFilterSource($filter,$key){
+		$operator = $filter->getOperator();
+		$value = "";
+		$value = sprintf('$%s',$key);
+		if(strpos($operator,"%")===0){
+			$value = ('"%" . ' . $value);
+		}
+		if(strpos(strrev($operator),"%")===0){
+			$value = ($value . ' . "%"');
+		}
+		return $value;
 	}
 	
 	public function commit(RadEntityRepository $repository){
@@ -42,15 +67,16 @@ class RadEntityRepositoryGenerator extends RadGeneratorBase {
 	     * @var RadQueryFilter $filter
 	     */
 	    foreach($repository->getQuery() as $query){
-	    	echo "\tQUERY" . PHP_EOL;
 	    		$method = $modelClass->addMethod("query" . ucfirst(strtolower($query->getName())));
 	    		$method->setVisibility("public");
 	    		$method->addBody(sprintf('$queryBuilder = $this->createQueryBuilder("%s");', $query->getEntity()->getName()));
-	    		foreach($query->getFilters() as $filter){
-	    			if(!$filter->getScope() & RadQueryFilter::SOURCE_INPUT){
-	    				$method->addParameter($filter->getValue());
-	    			}
-	    			
+	    		
+	    		foreach($query->getFilters() as $key => $filter){
+//	    			if(!$filter->getScope() & RadQueryFilter::SOURCE_INPUT){
+	    				$method->addParameter($key);
+//	    			}
+	    			$method->addBody(sprintf('$queryBuilder->andWhere("%s");',$this->evalFilterSql($filter,$key)));
+	    			$method->addBody(sprintf('$queryBuilder->setParameter("%s",%s);',$key, $this->evalFilterSource($filter,$key)));
 	    		}
 	    		$method->addBody(sprintf('$query = $queryBuilder->getQuery();'));
 	    		$method->addBody(sprintf('return $query->getResult();'));

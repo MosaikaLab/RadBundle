@@ -138,10 +138,11 @@ class RadQuery {
     /**
      * @return RadQueryFilter
      */
-    public function createFilter() {
+    public function createFilter($key) {
 	    	$filter = new RadQueryFilter();
 	    	$filter->setQuery($this);
-	    	$this->filters[] = $filter;
+	    	$filter->setName($key);
+	    	$this->filters[$key] = $filter;
     		return $filter;
     }
 

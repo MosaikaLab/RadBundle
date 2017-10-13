@@ -21,12 +21,6 @@ class RadClassable {
 		$this->bundle = $bundle;
 	}
 	/**
-	 * @return string Return the entity name in symfony format (Bundle:Entity)
-	 */
-	public function getDoctrineName(){
-		return $this->bundle . ":" . ($this->namespace ? $this->namespace . "\\" : "") . $this->name;
-	}
-	/**
 	 * @return string Full class name, including namespace
 	 */
 	public function getFullClass(){

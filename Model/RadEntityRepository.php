@@ -31,9 +31,12 @@ class RadEntityRepository extends RadClassable{
 		return $this;
 	}
 	/**
+	 * @param string $key Query name, if null return array
 	 * @return \Mosaika\RadBundle\Model\Query\RadQuery[] 
 	 */
-	public function getQuery() {
+	public function getQuery($key=null) {
+		if($key)
+			return $this->query[$key];
 		return $this->query;
 	}
 	
@@ -55,7 +58,7 @@ class RadEntityRepository extends RadClassable{
 	 */
 	public function createQuery($name) {
 		$query = new RadQuery($name, $this);
-		$this->query[] = $query;
+		$this->query[$name] = $query;
 		return $query;
 	}
 	

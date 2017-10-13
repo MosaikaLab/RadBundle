@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\Container;
 use Mosaika\RadBundle\Model\RadEntity;
 use Doctrine\ORM\EntityRepository;
 use Mosaika\RadBundle\Model\RadEntityRepository;
+use Mosaika\RadBundle\Core\Generator\RadGenerator;
 
 class RadFactory {
 	/**
@@ -18,6 +19,13 @@ class RadFactory {
 		$this->container = $container;
 	}
 	
+	/**
+	 * 
+	 * @return \Mosaika\RadBundle\Core\Generator\RadGenerator
+	 */
+	public function getGenerator(){
+		return new RadGenerator($this->container);
+	}
 	public function getBundleClass($bundle){
 		$kernel = $this->container->get('kernel');
 		$bundles = $kernel->getBundles();

@@ -8,6 +8,12 @@ class RadQueryFilter{
 	const SOURCE_REQUEST = 2;
 	const SOURCE_CONTEXT = 4;
 	
+	/**
+	 * 
+	 * @var string
+	 */
+	protected $name;
+	
     /**
      * Field you want to filter
      * @var string
@@ -142,6 +148,22 @@ class RadQueryFilter{
 		$this->query = $query;
 		return $this;
 	}
+	/**
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @param string $name
+	 * @return RadQueryFilter
+	 */
+	public function setName($name) {
+		$this->name = $name;
+		return $this;
+	}
+
 
 
    	

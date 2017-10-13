@@ -42,8 +42,6 @@ class EntityGeneratorTest extends KernelTestCase
     
     public function testEntity(){
         
-        $generator = new RadGenerator($this->container);
-        
         $bundle = "AppBundle";
         $entityNs = "\\AppBundle\\Entity\\";
         
@@ -51,12 +49,16 @@ class EntityGeneratorTest extends KernelTestCase
          * @var RadFactory $factory
          */
         $factory = $this->container->get("rad.factory");
+        $generator = $factory->getGenerator()
+        ->setTablePrefix("app_")
+        ->setBundle($bundle)
+        ;
         
         $entities = [];
         $repositories = [];
         $controllers = [];
         
-        
+        $this->container->get("rad.factory");
         // Post Category
         $entities["category"] = $factory->createEntity("Category","",$bundle)
         ->setTableName("category")
@@ -76,6 +78,18 @@ class EntityGeneratorTest extends KernelTestCase
         ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
         ;
         
+        foreach($entities as $entityKey => $entity){
+	        	$crud = new CrudController(null, "Api", $bundle);
+	        	$crud->setFormat("json")
+	        	->setEntity($entity)
+	        	->setContainer($this->container)
+	        	->addListAction("list",ListActionConfig::create()->exposeAll())
+	        	->addSaveAction()
+	        	;
+	        	$controllers[$entityKey] = $crud;
+	        	$generator->addController($crud,$entityKey);
+	        	$generator->addEntity($entity,$entityKey);
+        }
         
         $repositories["post"] = 
         
@@ -91,7 +105,7 @@ class EntityGeneratorTest extends KernelTestCase
         	//Create query for category page
         	->createQuery("category")
 	        	->addOrderBy("publish_date","desc")
-	        	->createFilter()
+	        	->createFilter("category")
 	        		->setScope("category")
 	        		->setSource(RadQueryFilter::SOURCE_REQUEST)
 	        	->getQuery()->getRepository()
@@ -99,18 +113,25 @@ class EntityGeneratorTest extends KernelTestCase
 	    //Create a fulltext search with request variable     	
         	->createQuery("search")
 	        	->addOrderBy("publish_date","desc")
-	        	->createFilter()
+	        	->createFilter("content")
 		        	//Fulltext search
-		        ->setScope(["content","title"])
+		        ->setScope("content")
 		        // Default operator is =
 		        ->setOperator("%like%")
 	        		->setExposed()
-	        		->setSource(RadQueryFilter::SOURCE_REQUEST)
+	        		//->setSource(RadQueryFilter::SOURCE_REQUEST)
 	        		// Define the request parameter key (querystring or post)
 	        		->setValue("s")
 	    		->getQuery()->getRepository()    		
         ;
-        
+	    		
+    		$controllers["post"]->exposeQuery($repositories["post"]->getQuery("recent"),array(
+    				
+    		));
+    		$controllers["post"]->exposeQuery($repositories["post"]->getQuery("search"),array(
+    				
+    		));
+	    		
         $repositories["category"] = $factory->createEntityRepository($entities["category"]);
         
         /*
@@ -124,22 +145,6 @@ class EntityGeneratorTest extends KernelTestCase
         */
         
         
-        $generator
-        ->setTablePrefix("app_")
-        ->setBundle($bundle)
-        ;
-        foreach($entities as $entityKey => $entity){
-	        	$crud = new CrudController(null, "Api", $bundle);
-	        	$crud
-	        	->setFormat("json")
-	        	->setEntity($entity)
-	        	->setContainer($this->container)
-	        	->addListAction("list",ListActionConfig::create()->exposeAll())
-	        	->addSaveAction()
-	        	;
-	        	$generator->addController($crud,$entityKey);
-	        	$generator->addEntity($entity,$entityKey);
-        }
         foreach($controllers as $controllerKey => $controller){
         	$generator->addController($controller,$controllerKey);
         }

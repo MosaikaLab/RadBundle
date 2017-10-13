@@ -24,6 +24,13 @@ class RadEntity extends RadClassable{
     }
     
     /**
+     * @return string Return the entity name in symfony format (Bundle:Entity)
+     */
+    public function getDoctrineName(){
+    		return $this->bundle . ":" . ($this->namespace ? $this->namespace . "\\" : "") . $this->name;
+    }
+    
+    /**
      * 
      * @param RadEntityField $field
      * @param string $key

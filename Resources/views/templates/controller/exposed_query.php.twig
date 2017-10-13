@@ -1,0 +1,11 @@
+/**
+ * @var {{ query.repository.fullClass }} $repository
+ */ 
+$em = $this->getDoctrine()->getManager();
+$repository = $em->getRepository("{{ query.repository.entity.getDoctrineName() }}");
+{% set filters = [] %}
+{% for filter in query.filters %}{% spaceless %}
+	{# 4 is SOURC_TYPE_REQUEST #}
+	{% set filters = filters|merge(["$request->get('#{filter.value|default(filter.name)}')"]) %}
+{%endspaceless%}{% endfor %}
+$repository->query{{ query.name|lower|capitalize }}({{ filters|join(",")|raw }});

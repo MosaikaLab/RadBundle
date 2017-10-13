@@ -1,6 +1,8 @@
 <?php
 namespace Mosaika\RadBundle\Model;
 
+use Mosaika\RadBundle\Model\Query\RadQuery;
+
 class RadController extends RadClassable{
         
     /**
@@ -12,9 +14,15 @@ class RadController extends RadClassable{
     
     protected $baseRoute;
     
+    /**
+     * @var RadQuery[]
+     */
+    protected $queries;
+    
     public function __construct($name, $namespace, $bundle){
         parent::__construct($name, $namespace, $bundle);
         $this->actions = [];
+        $this->queries = [];
     }
     
     /**
@@ -71,7 +79,20 @@ class RadController extends RadClassable{
 		$this->baseRoute = $baseRoute;
 		return $this;
 	}
-	
+	/**
+	 * @return multitype:\Mosaika\RadBundle\Model\Query\RadQuery 
+	 */
+	public function getQueries() {
+		return $this->queries;
+	}
+	/**
+	 * @param RadQuery $query
+	 * @return \Mosaika\RadBundle\Model\RadController
+	 */
+	public function exposeQuery($query,$args){
+		$this->queries[] = $query;
+		return $this;
+	}
 	
 }
 

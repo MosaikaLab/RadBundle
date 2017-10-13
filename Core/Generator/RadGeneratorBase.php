@@ -3,6 +3,7 @@
 namespace Mosaika\RadBundle\Core\Generator;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 class RadGeneratorBase {
 
@@ -88,6 +89,14 @@ class RadGeneratorBase {
 	    }
 	    return $res;
 	    
+	}
+	public function compileTwig($template,$args){
+		
+		/**
+		 * @var EngineInterface $twig
+		 */
+		$twig = $this->container->get("templating");
+		return $twig->render("MosaikaRadBundle::templates/" . $template,$args);
 	}
 	/**
 	 * @deprecated
