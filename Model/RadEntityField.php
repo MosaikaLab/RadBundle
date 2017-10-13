@@ -3,6 +3,7 @@ namespace Mosaika\RadBundle\Model;
 
 use Mosaika\RadBundle\Utils\GeneratorUtils;
 use Nette\PhpGenerator\ClassType;
+use Mosaika\RadBundle\Model\Controller\Action\ListActionConfig;
 
 class RadEntityField{
     
@@ -17,7 +18,20 @@ class RadEntityField{
     protected $defaultValue;
     
     public function getAnnotations(){
-        return [];
+	    	return [];
+    }
+    
+    /**
+     * @param string $varName Name of the entity object
+	 * @param number $strategy ListActionConfig::STRATEGY_DEFAULT|ListActionConfig::STRATEGY_DEEP
+	 * @param mixed $format Format (optional)
+     * @return string
+     */
+    public function getJsonExport($varName, $strategy=0, $format=null){
+    		return sprintf('$%s->%s();',$varName, GeneratorUtils::propertyToMethod($this->name,"get"));
+    }
+    public function getFillFromRequest(){
+    		return null;
     }
     public function getPhpType(){
         return $this->type;
@@ -59,6 +73,7 @@ class RadEntityField{
         $this->nullable = $nullable;
         return $this;
     }
+    
     
     /**
      * @return mixed
@@ -134,7 +149,7 @@ class RadEntityField{
      */
     public function getDefaultValue(){
         if(is_string($this->defaultValue)){
-            return var_dump($this->defaultValue, true);
+            return var_export($this->defaultValue, true);
         }
         return $this->defaultValue;
     }

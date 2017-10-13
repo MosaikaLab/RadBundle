@@ -1,9 +1,8 @@
 <?php
 namespace Mosaika\RadBundle\Model\Field;
 
-use Mosaika\RadBundle\Model\RadEntityField;
 
-class TextField extends RadEntityField{
+class TextField extends StringField{
     
     public static function create($name){
         return new self($name,"text");

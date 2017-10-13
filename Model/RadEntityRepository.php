@@ -1,22 +1,12 @@
 <?php
 namespace Mosaika\RadBundle\Model;
 
-class RadEntityRepository{
-	
-	
+class RadEntityRepository extends RadClassable{
     /**
-     * 
      * @var RadEntity
      */    
     protected $entity;
     
-    /**
-     * 
-     * @param RadEntity $entity
-     */
-    public function __construct($entity){
-	    	$this->setEntity($entity);
-    }
 	/**
 	 * @return \Mosaika\RadBundle\Model\RadEntity
 	 */

@@ -1,1 +1,17 @@
-return new JsonResponse(array("ok"));
+/**
+ * @var {{ entity.fullClass }} $row
+ */
+$repository = $this->getDoctrine()->getRepository('{{ entity.doctrineName }}');
+$result = $repository->{{ config.query }}();
+{% if format == 'json' %}
+$json = array();
+foreach($result as $row){
+	$arr = [];
+{% for field in entity.fields %}
+    {{ config.compileJsonExport(field,'row')|raw }}
+    
+{% endfor %}
+	$json[]  = $arr;
+}
+return $this->json($json);
+{% endif %}

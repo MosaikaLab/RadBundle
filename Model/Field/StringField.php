@@ -13,5 +13,8 @@ class StringField extends RadEntityField{
             $this->getDoctrineColumnAnnotation()
         ];
     }
+    public function getFillFromRequest(){
+    		return '$request->get("' . $this->name . '");'; 
+    }
 }
 

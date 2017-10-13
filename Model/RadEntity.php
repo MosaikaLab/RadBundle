@@ -1,14 +1,11 @@
 <?php
 namespace Mosaika\RadBundle\Model;
 
-class RadEntity{
-    protected $bundle;
+class RadEntity extends RadClassable{
     
     protected $fields;
     
     protected $tableName;
-    
-    protected $name;
     
     protected $lifeCycle;
     
@@ -18,14 +15,9 @@ class RadEntity{
     protected $repository;
     
     
-    public static function create($name, $namespace, $bundle=null){
-        return new RadEntity($name, $namespace, $bundle);
-    }
     
-    public function __construct($name, $namespace, $bundle=null){
-        $this->name = $name;
-        $this->namespace = $namespace;
-        $this->bundle = $bundle;
+    public function __construct($name, $namespace, $bundle){
+    		parent::__construct($name,$namespace,$bundle);
         $this->fields = [];
         
         $this->tableName = strtolower($name);
@@ -41,6 +33,13 @@ class RadEntity{
         return $this;
     }
     
+    /**
+     * @return RadEntityField[]
+     */
+    public function getFields(){
+    		return $this->fields;
+    }
+    
     public function setTableName($tableName){
         $this->tableName = $tableName;
         return $this;
@@ -48,47 +47,10 @@ class RadEntity{
     /**
      * @return string
      */
-    public function getBundle(){
-        return $this->bundle;
-    }
-
-    /**
-     * @return string
-     */
     public function getTableName(){
         return $this->tableName;
     }
     
-    /**
-     * @return mixed
-     */
-    public function getName(){
-        return $this->name;
-    }
-    /**
-     * @return RadEntityField[]
-     */
-    public function getFields(){
-        return $this->fields;
-    }
-
-    /**
-     * @param string $bundle
-     * @return RadEntity
-     */
-    public function setBundle($bundle){
-        $this->bundle = $bundle;
-        return $this;
-    }
-
-    /**
-     * @param mixed $name
-     * @return RadEntity
-     */
-    public function setName($name){
-        $this->name = $name;
-        return $this;
-    }
     /**
      * @return boolean
      */

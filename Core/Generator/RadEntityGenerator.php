@@ -35,7 +35,6 @@ class RadEntityGenerator extends RadGeneratorBase {
 	}
 	
 	public function commit(RadEntity $entity){
-	    
 	    $modelNs = new PhpNamespace($this->findNamespace("Model"));
 	    $modelNs
 //	    ->addUse("Doctrine\ORM\Mapping","ORM")
@@ -105,20 +104,20 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    $entityClass->addComment(sprintf('@Doctrine\ORM\Mapping\Entity(%s)',$repositoryClass));
 	    
 	    // Write Model class
+	    echo "Writing file: " . $modelPath . PHP_EOL;
 	    file_put_contents(
 	        $modelPath,
 	        "<?php" . PHP_EOL . $modelNs . $modelClass
 	    );
 	    
 	    // Write Entity class - Doesnt 
-	    if(!file_exists($entityPath)){
+	    if(true || !file_exists($entityPath)){
+		    	echo "Writing file " . $entityPath . PHP_EOL;
 	        file_put_contents(
 	            $entityPath,
 	            "<?php" . PHP_EOL . $entityNs . $entityClass
 	            );
 	    }
-	    echo "Rad entity commit: " . $entityPath . PHP_EOL;
-	    echo "Rad model commit: " . $modelPath . PHP_EOL;
         
         return $this;
 	}

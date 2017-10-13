@@ -20,6 +20,9 @@ use Mosaika\RadBundle\Model\Field\DateTimeField;
 use Mosaika\RadBundle\Model\RadController;
 use Mosaika\RadBundle\Model\RadControllerAction;
 use Mosaika\RadBundle\Model\Controller\CrudController;
+use Mosaika\RadBundle\Factory\RadFactory;
+use Mosaika\RadBundle\Model\Controller\Action\ListActionConfig;
+
 
 class EntityGeneratorTest extends KernelTestCase
 {
@@ -42,10 +45,15 @@ class EntityGeneratorTest extends KernelTestCase
         $bundle = "AppBundle";
         $entityNs = "\\AppBundle\\Entity\\";
         
+        /**
+         * @var RadFactory $factory
+         */
+        $factory = $this->container->get("rad.factory");
+        
         $entities = [];
         
         // Post Category
-        $entities["category"] = RadEntity::create("Category","")
+        $entities["category"] = $factory->createEntity("Category","",$bundle)
         ->setTableName("category")
         ->addField(IdField::create("id"))
         ->addField(StringField::create("title")->setDefaultValue("Prova"))
@@ -53,7 +61,7 @@ class EntityGeneratorTest extends KernelTestCase
         ;
         
         // Post
-        $entities["post"] = RadEntity::create("Post","")
+        $entities["post"] = $factory->createEntity("Post","",$bundle)
         ->setTableName("post")
         ->addField(IdField::create("id"))
         ->addField(StringField::create("title"))
@@ -65,12 +73,13 @@ class EntityGeneratorTest extends KernelTestCase
         ->addField(DateTimeField::create("fieldDatetime"))
         ->addField(JsonField::create("params"))
         ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
-        
-        ->createRepository()
-        ->getEntity()
         ;
         
+        $factory->createEntityRepository($entities["post"]);
+        $factory->createEntityRepository($entities["category"]);
+        
         $controllers = [];
+        /*
         $controllers["api.post"] = (new RadController("Post", "Api"))
         	->setBaseUrl("api/post/")
         	->setBaseRoute("api_post")
@@ -78,6 +87,7 @@ class EntityGeneratorTest extends KernelTestCase
         		RadControllerAction::create("list")		
         	)
         ;
+        */
         
         
         $generator
@@ -85,11 +95,19 @@ class EntityGeneratorTest extends KernelTestCase
         ->setBundle($bundle)
         ;
         foreach($entities as $e){
-        	$generator->addController((new CrudController(null, "api"))->setEntity($e)->setContainer($this->container));
-        	$generator->addEntity($e);
+	        	$crud = new CrudController(null, "api");
+	        	$crud
+	        	->setFormat("json")
+	        	->setEntity($e)
+	        	->setContainer($this->container)
+	        	->addListAction("list",ListActionConfig::create()->exposeAll())
+	        	->addSaveAction()
+	        	;
+	        	$generator->addController($crud);
+	        	$generator->addEntity($e);
         }
         foreach($controllers as $controller){
-        	$generator->addController($controller);
+        		$generator->addController($controller);
         }
         
         $generator->commit();

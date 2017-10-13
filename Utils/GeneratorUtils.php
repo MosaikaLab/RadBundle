@@ -37,6 +37,6 @@ class GeneratorUtils{
 		if (!$prefix) {
 			$str[0] = strtolower($str[0]);
 		}
-		return $prefix . $str;
+		return $prefix . ucfirst($str);
 	}
 }

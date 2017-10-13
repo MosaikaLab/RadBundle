@@ -41,6 +41,9 @@ class RadGenerator{
      * @return \Mosaika\RadBundle\Core\Generator\RadGenerator
      */
     public function addController($controller){
+	    	if(!$controller->getBundle()){
+	    		$controller->setBundle($this->bundle);
+	    	}
         $this->controllers[] = $controller;
         return $this;
     }
@@ -51,11 +54,14 @@ class RadGenerator{
      * @return \Mosaika\RadBundle\Core\Generator\RadGenerator
      */
     public function addEntity($e){
-    	$this->entities[] = $e;
-    	if($this->tablePrefix){
-    		$e->setTableName($this->tablePrefix . $e->getTableName());
-    	}
-    	return $this;
+	    	if(!$e->getBundle()){
+		    	$e->setBundle($this->bundle);
+	    	}
+	    	$this->entities[] = $e;
+	    	if($this->tablePrefix){
+	    		$e->setTableName($this->tablePrefix . $e->getTableName());
+	    	}
+	    	return $this;
     }
     
     public function tableName($name){
@@ -69,6 +75,7 @@ class RadGenerator{
     
     public function _commit($generator, $collection){
         $generator->setBundle($this->bundle);
+echo PHP_EOL . PHP_EOL . "Committing " . get_class($generator) . PHP_EOL;
         foreach($collection as $c){
             $generator->commit($c);
         }

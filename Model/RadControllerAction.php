@@ -26,7 +26,7 @@ class RadControllerAction{
      * 
      * @var string[]
      */
-    protected $body;
+    protected $body = [];
     
     public static function create($name,$url=null){
         return new RadControllerAction($name, $url);
@@ -74,7 +74,7 @@ class RadControllerAction{
      * @return string
      */
 	public function getUrl() {
-		return $this->url;
+		return $this->url ? $this->url : strtolower($this->name);
 	}
 	
 	/**
@@ -90,7 +90,7 @@ class RadControllerAction{
      * @return string
      */
 	public function getRoute() {
-		return $this->route;
+		return $this->route ? $this->route : strtolower($this->name);
 	}
 	
 	/**

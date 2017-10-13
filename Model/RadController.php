@@ -1,16 +1,7 @@
 <?php
 namespace Mosaika\RadBundle\Model;
 
-class RadController{
-    /**
-     * @var string
-     */
-	protected $bundle;
-	
-    /**
-     * @var string
-     */
-    protected $name;
+class RadController extends RadClassable{
         
     /**
      * @var RadControllerAction[]
@@ -22,9 +13,8 @@ class RadController{
     protected $baseRoute;
     
     public function __construct($name, $namespace, $bundle=null){
-        $this->name = $name;
-        $this->namespace = $namespace;
-        $this->bundle = $bundle;
+        parent::__construct($name, $namespace, $bundle);
+        $this->actions = [];
     }
     
     /**
@@ -32,47 +22,8 @@ class RadController{
      * @return \Mosaika\RadBundle\Model\RadController
      */
     public function addAction($action){
-    	$this->actions[] = $action;
-    	return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getBundle(){
-        return $this->bundle;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTableName(){
-        return $this->tableName;
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function getName(){
-        return $this->name;
-    }
-
-    /**
-     * @param string $bundle
-     * @return RadController
-     */
-    public function setBundle($bundle){
-        $this->bundle = $bundle;
-        return $this;
-    }
-
-    /**
-     * @param mixed $name
-     * @return RadController
-     */
-    public function setName($name){
-        $this->name = $name;
-        return $this;
+	    	$this->actions[] = $action;
+	    	return $this;
     }
     
     /**
@@ -95,7 +46,7 @@ class RadController{
 	 * 
 	 */
 	public function getBaseUrl() {
-		return $this->baseUrl;
+		return $this->baseUrl!=null ? $this->baseUrl : strtolower($this->name);	
 	}
 	
     /**
@@ -110,7 +61,7 @@ class RadController{
 	 * 
 	 */
 	public function getBaseRoute() {
-		return $this->baseRoute;
+		return $this->baseRoute ? $this->baseRoute : strtolower($this->name);
 	}
 	
     /**

@@ -10,5 +10,8 @@ class FloatField extends StringField{
     public function getPhpType(){
         return "float";
     }
+    public function getFillFromRequest(){
+    	return 'floatval($request->get("' . $this->name . '"));';
+    }
 }
 
