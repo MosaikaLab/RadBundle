@@ -38,7 +38,7 @@ class RadFactory {
 	 * @param RadEntity $entity
 	 */
 	public function createEntityRepository($entity){
-		$repo = new RadEntityRepository($entity->getName(), $entity->getNamespace(), $entity->getBundle());
+		$repo = new RadEntityRepository($entity->getName() . "Repository", $entity->getNamespace(), $entity->getBundle());
 		$this->setObjectFullClass($repo);
 		$repo->setEntity($entity);
 		$entity->setRepository($repo);

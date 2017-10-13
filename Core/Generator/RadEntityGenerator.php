@@ -95,11 +95,7 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    // Create Repository
 	    $repositoryClass = null;
 	    if($entity->getRepository()){
-	    		$repoGenerator = RadEntityRepositoryGenerator::get($this->container);
-		    	$repoGenerator->setBundle($this->getBundle());
-		    	$repoGenerator->commit($entity->getRepository());
-		    	$fullclass = $entityNs->getName() . "\\" . $entityClass->getName() . "Repository";
-		    	$repositoryClass = sprintf('repositoryClass="%s"',$fullclass);
+		    	$repositoryClass = sprintf('repositoryClass="%s"',$entity->getRepository()->getFullClass());
 	    }
 	    $entityClass->addComment(sprintf('@Doctrine\ORM\Mapping\Entity(%s)',$repositoryClass));
 	    

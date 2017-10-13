@@ -12,7 +12,7 @@ class RadController extends RadClassable{
     
     protected $baseRoute;
     
-    public function __construct($name, $namespace, $bundle=null){
+    public function __construct($name, $namespace, $bundle){
         parent::__construct($name, $namespace, $bundle);
         $this->actions = [];
     }

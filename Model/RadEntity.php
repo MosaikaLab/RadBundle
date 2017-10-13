@@ -26,10 +26,13 @@ class RadEntity extends RadClassable{
     /**
      * 
      * @param RadEntityField $field
+     * @param string $key
      * @return \Mosaika\RadBundle\Model\RadEntity
      */
-    public function addField($field){
-        $this->fields[] = $field;
+    public function addField($field,$key=null){
+    		if(!$key)
+    			$key = $field->getName();
+        $this->fields[$key] = $field;
         return $this;
     }
     
@@ -38,6 +41,13 @@ class RadEntity extends RadClassable{
      */
     public function getFields(){
     		return $this->fields;
+    }
+    /**
+     * @param string $key 
+     * @return RadEntityField
+     */
+    public function getField($key){
+    		return $this->fields[$key];
     }
     
     public function setTableName($tableName){
@@ -94,7 +104,8 @@ class RadEntity extends RadClassable{
      * @return \Mosaika\RadBundle\Model\RadEntityRepository
      */
     public function createRepository(){
-        $this->repository = new RadEntityRepository($this);
+        $this->repository = new RadEntityRepository($this->name . "Repository", $this->namespace, $this->bundle);
+        $this->repository->setFullClass($this->getFullClass() . "Repository");
         return $this->repository;
     }
 
