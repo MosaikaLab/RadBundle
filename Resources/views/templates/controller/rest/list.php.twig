@@ -1,0 +1,10 @@
+/**
+ * @var {{ entity.fullClass }}Repository $repository
+ */ 
+$em = $this->getDoctrine()->getManager();
+$repository = $em->getRepository("{{ entity.getDoctrineName() }}");
+$result = $repository->findAll();
+if($result===null ){
+	return new View("there are no {{ entity.name }} exist", Response::HTTP_NOT_FOUND);
+}
+return $result;

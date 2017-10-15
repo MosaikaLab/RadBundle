@@ -78,8 +78,9 @@ class RadEntityRepositoryGenerator extends RadGeneratorBase {
 	    			$method->addBody(sprintf('$queryBuilder->andWhere("%s");',$this->evalFilterSql($filter,$key)));
 	    			$method->addBody(sprintf('$queryBuilder->setParameter("%s",%s);',$key, $this->evalFilterSource($filter,$key)));
 	    		}
-	    		$method->addBody(sprintf('$query = $queryBuilder->getQuery();'));
-	    		$method->addBody(sprintf('return $query->getResult();'));
+	    		$method->addBody(sprintf('return $queryBuilder;'));
+	    		//$method->addBody(sprintf('$query = $queryBuilder->getQuery();'));
+	    		//$method->addBody(sprintf('return $query->getResult();'));
 	    }
 	    
 	    $modelDir = $this->getWorkingPath("AbstractRepository");

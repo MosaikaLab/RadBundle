@@ -1,0 +1,18 @@
+$em = $this->getDoctrine()->getManager();
+$repository = $em->getRepository('{{ entity.doctrineName }}');
+$item = null;
+if($request->get("id")){
+	$item = $repository->find(intval($request->get("id")));
+}else{
+	$item = new {{ entity.fullClass }}();
+}
+{% for field in entity.fields %}
+{{ config.compileFillFromRequest(field)|raw }}
+{% endfor %}
+$em->persist($item);
+$em->flush();
+{% if format == 'json' %}
+return $this->json(array("success" => true, "id" => $item->getId()));
+{% else %}
+return "";
+{% endif %}	

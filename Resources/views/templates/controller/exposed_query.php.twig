@@ -8,4 +8,5 @@ $repository = $em->getRepository("{{ query.repository.entity.getDoctrineName() }
 	{# 4 is SOURC_TYPE_REQUEST #}
 	{% set filters = filters|merge(["$request->get('#{filter.value|default(filter.name)}')"]) %}
 {%endspaceless%}{% endfor %}
-$repository->query{{ query.name|lower|capitalize }}({{ filters|join(",")|raw }});
+$query = $repository->query{{ query.name|lower|capitalize }}({{ filters|join(",")|raw }});
+return $this->json($query->getQuery()->getResult());

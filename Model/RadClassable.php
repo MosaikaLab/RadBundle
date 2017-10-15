@@ -3,12 +3,16 @@
 namespace Mosaika\RadBundle\Model;
 
 class RadClassable {
+	protected $uses;
 	
 	protected $bundle;
 	
 	protected $name;
 	
 	protected $namespace;
+	
+	protected $extends;
+	
 	
 	/**
 	 * @var string Entity class, including namespace
@@ -19,7 +23,25 @@ class RadClassable {
 		$this->name = $name;
 		$this->namespace = $namespace;
 		$this->bundle = $bundle;
+		$this->uses = [];
 	}
+	
+	/**
+	 * @return mixed
+	 */
+	public function getExtends() {
+		return $this->extends;
+	}
+
+	/**
+	 * @param mixed $extends
+	 * @return RadClassable
+	 */
+	public function setExtends($extends) {
+		$this->extends = $extends;
+		return $this;
+	}
+
 	/**
 	 * @return string Full class name, including namespace
 	 */
@@ -81,6 +103,21 @@ class RadClassable {
 	public function setNamespace($namespace) {
 		$this->namespace = $namespace;
 		return $this;
+	}
+	/**
+	 * 
+	 * @param string $use
+	 * @return \Mosaika\RadBundle\Model\RadClassable
+	 */
+	public function addUse($use,$as=null){
+		$this->uses[] = $use . ($as ? "@" . $as : "");
+		return $this;
+	}
+	/**
+	 * @return mixed
+	 */
+	public function getUses() {
+		return $this->uses;
 	}
 
 }

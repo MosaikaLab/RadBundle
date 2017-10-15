@@ -116,7 +116,7 @@ class RadQuery {
      * @return RadQuery
      */
     public function addOrderBy($orderBy,$orderDir="asc") {
-    		$this->orderBy[] = $orderBy . " " . $orderDir;
+    		$this->orderBy[] = $this->entity->getName() . "." . $orderBy . " " . $orderDir;
     		return $this;
     }
     /**

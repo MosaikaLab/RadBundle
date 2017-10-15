@@ -24,6 +24,7 @@ use Mosaika\RadBundle\Factory\RadFactory;
 use Mosaika\RadBundle\Model\Controller\Action\ListActionConfig;
 use Mosaika\RadBundle\Model\Query\RadQuery;
 use Mosaika\RadBundle\Model\Query\RadQueryFilter;
+use Mosaika\RadBundle\Model\Controller\RestController;
 
 
 class EntityGeneratorTest extends KernelTestCase
@@ -79,10 +80,11 @@ class EntityGeneratorTest extends KernelTestCase
         ;
         
         foreach($entities as $entityKey => $entity){
-	        	$crud = new CrudController(null, "Api", $bundle);
+	        	$crud = new RestController(null, "Api", $bundle);
 	        	$crud->setFormat("json")
 	        	->setEntity($entity)
 	        	->setContainer($this->container)
+	        	->setBaseUrl("api/" . strtolower($entity->getName()))
 	        	->addListAction("list",ListActionConfig::create()->exposeAll())
 	        	->addSaveAction()
 	        	;

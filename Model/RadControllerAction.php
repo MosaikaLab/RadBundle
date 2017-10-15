@@ -28,15 +28,44 @@ class RadControllerAction{
      */
     protected $body = [];
     
-    public static function create($name,$url=null){
-        return new RadControllerAction($name, $url);
+    /**
+     * 
+     * @var string[]
+     */
+    protected $annotations;
+    
+    /**
+     * 
+     * @var RadController
+     */
+    protected $controller;
+    
+    public static function create($name,$controller,$url=null){
+        return new RadControllerAction($name, $controller, $url);
     }
     
-    public function __construct($name,$url=null){
+    public function __construct($name,$controller,$url=null){
         $this->name = $name;
         $this->url = $url;
+        $this->controller = $controller;
+        $this->annotations = [];
     }
-    
+    public function getFullUrl(){
+	    	$url = "/" . $this->getUrl();
+	    	if($this->controller->getBaseUrl()){
+	    		$url = "/" . $this->controller->getBaseUrl() . "/" . $url;
+	    	}
+	    	$url = str_replace("//","/",$url);
+	    	return $url;
+    }
+    public function getFullRoute(){
+	    	$route = $this->getRoute();
+	    	if($this->controller->getBaseRoute()){
+	    		$route = $this->controller->getBaseRoute() . "_" . $route;
+	    	}
+	    	$route = str_replace("__","_",$route);
+	    	return $route;
+    }
     /**
      * @return string
      */
@@ -120,5 +149,22 @@ class RadControllerAction{
 		$this->body[]= $body;
 		return $this;
 	}
+	/**
+	 * @return multitype:string 
+	 */
+	public function getAnnotations() {
+		return $this->annotations;
+	}
+
+	/**
+	 * @param string  $annotation
+	 * @return RadControllerAction
+	 */
+	public function addAnnotation($annotation) {
+		$this->annotations[] = $annotation;
+		return $this;
+	}
+
+	
 }
 
