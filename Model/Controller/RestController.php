@@ -46,9 +46,9 @@ class RestController extends RadController{
 	/**
 	 * @param string $name Action name
 	 * @param string $repositoryQuery Method to use for this action
-     * @return \Mosaika\RadBundle\Model\Controller\CrudController
+	 * @return \Mosaika\RadBundle\Model\Controller\RestController
 	 */
-	public function addListAction($name="list", $config=null){
+	public function addListAction($name="restList", $config=null){
 		if(!$config){
 			$config = ListActionConfig::create();
 		}
@@ -63,37 +63,100 @@ class RestController extends RadController{
 				"entity" => $this->entity
 		));
 		
-		$this->actions[] = $action = RadControllerAction::create($name,$this);
+		$this->actions[] = $action = RadControllerAction::create($name,$this,"");
 		$action
+		->setAddRoute(false)
 		->addAnnotation(sprintf('@Rest\Get("%s")',$action->getFullUrl()))
 		->setBody($body)
 		;
-		
 		return $this;
 	}
 	/**
 	 * @param string $name Action name
-	 * @param SaveActionConfig $config Action config
-     * @return \Mosaika\RadBundle\Model\Controller\CrudController
+	 * @param string $repositoryQuery Method to use for this action
+	 * @return \Mosaika\RadBundle\Model\Controller\RestController
 	 */
-	public function addSaveAction($name="save",$config=null){
+	public function addGetAction($name="restGet", $config=null){
+		if(!$config){
+			//			$config = ListActionConfig::create();
+		}
+		
 		/**
 		 * @var EngineInterface $twig
 		 */
 		$twig = $this->container->get("templating");
+		$body = $twig->render("MosaikaRadBundle::templates/controller/rest/get.php.twig", array(
+				"config" => $config,
+				"format" => $this->format,
+				"entity" => $this->entity
+		));
+		
+		$this->actions[] = $action = RadControllerAction::create($name,$this,"");
+		$action
+		->setAddRoute(false)
+		->setUrl("/{id}")
+		->addArgument("id")
+		->addAnnotation(sprintf('@Rest\Get("%s")',$action->getFullUrl()))
+		->setBody($body)
+		;
+		return $this;
+	}
+	/**
+	 * Add an action for insert new Entity
+	 * @param string $name Action name
+	 * @return \Mosaika\RadBundle\Model\Controller\RestController
+	 */
+	public function addPostAction($name="restPost", $config=null){
 		if(!$config){
 			$config = SaveActionConfig::create();
 		}
 		
-		$body = $twig->render("MosaikaRadBundle::templates/controller/crud/save.php.twig", array(
-			"format" => $this->format,
-			"entity" => $this->entity,
-			"config" => $config
+		/**
+		 * @var EngineInterface $twig
+		 */
+		$twig = $this->container->get("templating");
+		$body = $twig->render("MosaikaRadBundle::templates/controller/rest/post.php.twig", array(
+				"config" => $config,
+				"format" => $this->format,
+				"entity" => $this->entity
 		));
-		$this->actions[] = RadControllerAction::create($name,$this)
+		
+		$this->actions[] = $action = RadControllerAction::create($name,$this,"");
+		$action
+		->setAddRoute(false)
+		->addAnnotation(sprintf('@Rest\Post("%s")',$action->getFullUrl()))
 		->setBody($body)
 		;
+		return $this;
+	}
+	/**
+	 * Add an action for insert new Entity
+	 * @param string $name Action name
+	 * @return \Mosaika\RadBundle\Model\Controller\RestController
+	 */
+	public function addPutAction($name="restPut", $config=null){
+		if(!$config){
+			$config = SaveActionConfig::create();
+		}
 		
+		/**
+		 * @var EngineInterface $twig
+		 */
+		$twig = $this->container->get("templating");
+		$body = $twig->render("MosaikaRadBundle::templates/controller/rest/put.php.twig", array(
+				"config" => $config,
+				"format" => $this->format,
+				"entity" => $this->entity
+		));
+		
+		$this->actions[] = $action = RadControllerAction::create($name,$this,"");
+		$action
+		->setAddRoute(false)
+		->setUrl("/{id}")
+		->addArgument("id")
+		->addAnnotation(sprintf('@Rest\Put("%s")',$action->getFullUrl()))
+		->setBody($body)
+		;
 		return $this;
 	}
 	

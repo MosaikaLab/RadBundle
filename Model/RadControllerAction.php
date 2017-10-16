@@ -1,6 +1,8 @@
 <?php
 namespace Mosaika\RadBundle\Model;
 
+use Nette\PhpGenerator\Parameter;
+
 class RadControllerAction{
     /**
      * @var string
@@ -29,16 +31,23 @@ class RadControllerAction{
     protected $body = [];
     
     /**
-     * 
+     *
      * @var string[]
      */
     protected $annotations;
+    /**
+     *
+     * @var Parameter[]
+     */
+    protected $arguments;
     
     /**
      * 
      * @var RadController
      */
     protected $controller;
+    
+    protected $addRoute=true;
     
     public static function create($name,$controller,$url=null){
         return new RadControllerAction($name, $controller, $url);
@@ -49,12 +58,17 @@ class RadControllerAction{
         $this->url = $url;
         $this->controller = $controller;
         $this->annotations = [];
+        $this->arguments = [];
     }
-    public function getFullUrl(){
+    public function getFullUrl($suffix=null){
 	    	$url = "/" . $this->getUrl();
 	    	if($this->controller->getBaseUrl()){
 	    		$url = "/" . $this->controller->getBaseUrl() . "/" . $url;
 	    	}
+	    	if($suffix){
+	    		$url .= "/" . $suffix;
+	    	}
+	    	$url = str_replace("//","/",$url);
 	    	$url = str_replace("//","/",$url);
 	    	return $url;
     }
@@ -103,7 +117,7 @@ class RadControllerAction{
      * @return string
      */
 	public function getUrl() {
-		return $this->url ? $this->url : strtolower($this->name);
+		return !is_null($this->url) ? $this->url : strtolower($this->name);
 	}
 	
 	/**
@@ -164,6 +178,45 @@ class RadControllerAction{
 		$this->annotations[] = $annotation;
 		return $this;
 	}
+	/**
+	 * @return multitype:\Nette\PhpGenerator\Parameter 
+	 */
+	public function getArguments() {
+		return $this->arguments;
+	}
+
+	/**
+	 * @param string $name
+	 * @param string $type
+	 * @param string $default
+	 * @return RadControllerAction
+	 */
+	public function addArgument($name, $type=null, $default=null) {
+		$arg = new Parameter($name);
+		if(func_num_args() > 1)
+			$arg->setTypeHint($type);
+		if(func_num_args() > 2)
+			$arg->setDefaultValue($default);
+		$this->arguments[] = $arg;
+		return $this;
+	}
+	/**
+	 * @return boolean
+	 */
+	public function getAddRoute() {
+		return $this->addRoute;
+	}
+
+	/**
+	 * @param boolean $addRoute
+	 * @return RadControllerAction
+	 */
+	public function setAddRoute($addRoute) {
+		$this->addRoute = $addRoute;
+		return $this;
+	}
+
+
 
 	
 }

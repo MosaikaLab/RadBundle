@@ -4,12 +4,18 @@ namespace Mosaika\RadBundle\Core\Generator;
 use Mosaika\RadBundle\Model\RadEntity;
 use Mosaika\RadBundle\Model\RadController;
 use Mosaika\RadBundle\Model\RadEntityRepository;
+use Mosaika\RadBundle\Model\Controller\RestController;
+use Symfony\Component\DependencyInjection\Container;
 class RadGenerator{
     protected $container;
 
     protected $entities;
     
     protected $controllers;
+    
+    protected $javascriptClients;
+    
+    protected $javascriptClientsDirectory;
     
     /**
      * @var RadEntityRepository[]
@@ -32,7 +38,7 @@ class RadGenerator{
         $this->entities = [];
         $this->controllers = [];
         $this->repositories = [];
-        
+        $this->javascriptClients = [];
     }
     /**
      * 
@@ -105,10 +111,10 @@ echo PHP_EOL . PHP_EOL . "Committing " . get_class($generator) . PHP_EOL;
 	public function getRepositories() {
 		return $this->repositories;
 	}
-
+	
 	/**
 	 * @param \Mosaika\RadBundle\Model\RadEntityRepository  $repository
-     * @param string $key 
+	 * @param string $key
 	 * @return RadGenerator
 	 */
 	public function addRepository($repository, $key) {
@@ -117,6 +123,37 @@ echo PHP_EOL . PHP_EOL . "Committing " . get_class($generator) . PHP_EOL;
 		}
 		$this->repositories[$key] = $repository;
 		return $this;
+	}
+	/**
+	 * @param RestController $restController
+	 * @param string $key
+	 * @return RadGenerator
+	 */
+	public function addJavascriptClient($restController, $key) {
+		$this->javascriptClients[$key] = $restController;
+		return $this;
+	}
+	/**
+	 * @return mixed
+	 */
+	public function getJavascriptClientsDirectory() {
+		return $this->javascriptClientsDirectory;
+	}
+
+	/**
+	 * @param mixed $javascriptClientsDirectory
+	 * @return RadGenerator
+	 */
+	public function setJavascriptClientsDirectory($javascriptClientsDirectory) {
+		$this->javascriptClientsDirectory = $javascriptClientsDirectory;
+		return $this;
+	}
+	/**
+	 * 
+	 * @return Container
+	 */
+	public function getContainer(){
+		return $this->container;
 	}
 
 	

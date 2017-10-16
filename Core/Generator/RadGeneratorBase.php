@@ -28,7 +28,22 @@ class RadGeneratorBase {
 	{
 		return $this->vendor;
 	}
-	
+	public function createDirs($dirs){
+		$args = func_get_args();
+		foreach($args as $a){
+			if(!file_exists($a)){
+				mkdir($a);
+			}
+		}
+	}
+	protected function runCommand($args){
+		$kernel = $this->container->get('kernel');
+		$application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
+		$application->setAutoExit(false);
+
+		$application->run(new \Symfony\Component\Console\Input\ArrayInput($args));
+		
+	}
 	/**
 	 * @param string $vendor
 	 */

@@ -26,7 +26,11 @@ class SaveActionConfig {
 		$action = null;
 		if($fill){
 			$action = sprintf('$%s = %s',$name,$fill) . PHP_EOL .
-			sprintf('$item->%s($%s);', GeneratorUtils::propertyToMethod($name,"set"), $name);
+			sprintf('if(!is_null($%s)){',$name) . PHP_EOL .
+			sprintf("\t" . '$item->%s($%s);', GeneratorUtils::propertyToMethod($name,"set"), $name) . PHP_EOL .
+			sprintf('}')
+			;
+			
 		}
 		return $action;
 	}

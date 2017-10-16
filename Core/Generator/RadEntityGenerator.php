@@ -81,15 +81,13 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    	);
 	    
 	    $modelDir = $this->getWorkingPath("Model");
+	    $formDir = $this->getWorkingPath("Form");
 	    $entityDir = $this->getWorkingPath();
 	    
-	    if(!file_exists($modelDir)){
-	        mkdir($modelDir);
-	    }
-	    if(!file_exists($entityDir)){
-	        mkdir($entityDir);
-	    }
+	    $this->createDirs($modelDir,$entityDir,$formDir,$formDir);
+	    
 	    $modelPath = $modelDir. $modelClass->getName() . ".php";
+	    $formPath = $formDir. $modelClass->getName() . "Type.php";
 	    $entityPath = $entityDir. $entityClass->getName() . ".php";
 	    
 	    // Create Repository
@@ -114,7 +112,9 @@ class RadEntityGenerator extends RadGeneratorBase {
 	            "<?php" . PHP_EOL . $entityNs . $entityClass
 	            );
 	    }
-        
+	    if(true || !file_exists($formPath)){
+	    	$this->runCommand(["command" => "generate:doctrine:form","entity" => $entity->getDoctrineName()]);
+	    }
         return $this;
 	}
 

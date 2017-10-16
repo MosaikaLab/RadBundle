@@ -4,6 +4,7 @@ namespace Mosaika\RadBundle\Utils;
 class GeneratorUtils{
 	public static function dbToProperty($dbName){
 		$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $dbName)));
+		$str = strtolower(substr($str,0,1)) . substr($str,1);
 		return $str;
 	}
 	public static function propertyToDb($input){
@@ -26,8 +27,8 @@ class GeneratorUtils{
 	public static function dbToMethod($dbName, $prefix=""){
 		$str = self::dbToProperty($dbName);
 		
-		if (!$prefix) {
-			$str[0] = strtolower($str[0]);
+		if ($prefix) {
+			$str[0] = strtoupper($str[0]);
 		}
 		return $prefix . $str;
 	}

@@ -1,0 +1,27 @@
+$em = $this->getDoctrine()->getManager();
+$repository = $em->getRepository('{{ entity.doctrineName }}');
+$item = $repository->find(intval($id));
+if(!$item){
+	return new View("{{ entity.name }} not found", Response::HTTP_NOT_FOUND);
+}
+$form = $this->createForm('{{ entity.fullClass|replace({'Entity': 'Form'}) }}Type',$item);
+$input = json_decode($request->getContent(), true);
+$data = array();
+foreach($input as $k => $v){
+	// TODO remove this sh*t
+	$k = \Mosaika\RadBundle\Utils\GeneratorUtils::dbToProperty($k);
+	if($form->has($k)){
+		$data[$k] = $v;
+	}
+}
+if($form->submit($data)->isValid()){
+    $em->persist($item);
+    $em->flush();
+{% if format == 'json' %}
+    return $item;
+{% else %}
+return "";
+{% endif %}
+}else{
+	return new View("Invalid request", Response::HTTP_NOT_ACCEPTABLE);
+}

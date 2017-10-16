@@ -5,3 +5,7 @@ services:
     rad.factory:
         class: Mosaika\RadBundle\Factory\RadFactory
         arguments: ["@service_container"]
+    rad.build_listener:
+        class: Mosaika\RadBundle\EventListener\RadListenerTest
+        tags:
+            - { name: kernel.event_listener, event: rad.build }

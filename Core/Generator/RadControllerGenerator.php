@@ -50,6 +50,7 @@ class RadControllerGenerator extends RadGeneratorBase {
 	    $queryActions = [];
 	    /**
 	     * @var RadQuery $query
+	     * @var RadControllerAction $action
 	     */
 	    foreach($controller->getQueries() as $query){
 	    		$action = new RadControllerAction(GeneratorUtils::propertyToMethod($query->getName(),"get"),$controller);
@@ -60,11 +61,18 @@ class RadControllerGenerator extends RadGeneratorBase {
 	    }
 	    foreach(array_merge($controller->getActions(),$queryActions) as $action){
 	    		$method = $abstractClass->addMethod($action->getName() . "Action");
-	    		$method->addComment(sprintf('@Route("%s", name="%s")',$action->getFullUrl() , $action->getFullRoute()));
+
+	    		if($action->getAddRoute()){
+		    		$method->addComment(sprintf('@Route("%s", name="%s")',$action->getFullUrl() , $action->getFullRoute()));
+	    		}
 	    		foreach($action->getAnnotations() as $annotation){	
 	    			$method->addComment($annotation);
 	    		}
 	    		$method->addParameter("request")->setTypeHint("Symfony\Component\HttpFoundation\Request");
+	    		foreach($action->getArguments() as $arg){
+	    			$method->addParameter($arg->getName(),$arg->getDefaultValue());
+	    			
+	    		}
 	    		$method->setVisibility("public");
 	    		
 	    		$method->setBody($action->getBody());

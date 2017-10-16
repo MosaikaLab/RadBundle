@@ -58,6 +58,7 @@ class EntityGeneratorTest extends KernelTestCase
         $entities = [];
         $repositories = [];
         $controllers = [];
+        $clients = [];
         
         $this->container->get("rad.factory");
         // Post Category
@@ -79,14 +80,41 @@ class EntityGeneratorTest extends KernelTestCase
         ->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
         ;
         
+        // Client
+        $entities["client"] = $factory->createEntity("Client","",$bundle)
+        ->setTableName("client")
+        ->addField(IdField::create("id"))
+        ->addField(StringField::create("name"))
+        ->addField(TextField::create("address"))
+        ->addField(TextField::create("vat"))
+        ->addField(DateTimeField::create("created_at")->setNowDefaultValue())
+        ->addField(DateTimeField::create("updated_at")->setNowDefaultValue())
+        ;
+        
+        // Quotation
+        $entities["quotation"] = $factory->createEntity("Quotation","",$bundle)
+        ->setTableName("quotation")
+        ->addField(IdField::create("id"))
+        ->addField(StringField::create("title"))
+        ->addField(TextField::create("num"))
+        ->addField(DateField::create("date"))
+        ->addField(DateTimeField::create("created_at")->setNowDefaultValue())
+        ->addField(DateTimeField::create("updated_at")->setNowDefaultValue())
+        ->addField(OneToManyField::create("client",$entityNs . "Client"))
+        ;
+        
         foreach($entities as $entityKey => $entity){
 	        	$crud = new RestController(null, "Api", $bundle);
 	        	$crud->setFormat("json")
 	        	->setEntity($entity)
 	        	->setContainer($this->container)
 	        	->setBaseUrl("api/" . strtolower($entity->getName()))
-	        	->addListAction("list",ListActionConfig::create()->exposeAll())
-	        	->addSaveAction()
+	        	;
+	        	$crud
+	        	->addListAction("list",ListActionConfig::create()->exposeAll())	// Get list of entities
+	        ->addPostAction() // Insert new entity
+	        	->addGetAction()	// Get single entity
+	        	->addPutAction() // Edit an entity
 	        	;
 	        	$controllers[$entityKey] = $crud;
 	        	$generator->addController($crud,$entityKey);
@@ -133,7 +161,13 @@ class EntityGeneratorTest extends KernelTestCase
     		$controllers["post"]->exposeQuery($repositories["post"]->getQuery("search"),array(
     				
     		));
-	    		
+	    	
+    		foreach($controllers as $key => $controller){
+    			if($controller instanceof RestController){
+    				$generator->addJavascriptClient($controller,$key);
+    			}
+    		}
+    		
         $repositories["category"] = $factory->createEntityRepository($entities["category"]);
         
         /*
@@ -148,12 +182,12 @@ class EntityGeneratorTest extends KernelTestCase
         
         
         foreach($controllers as $controllerKey => $controller){
-        	$generator->addController($controller,$controllerKey);
+        		$generator->addController($controller,$controllerKey);
         }
         foreach($repositories as $repositoryKey => $repository){
         		$generator->addRepository($repository,$repositoryKey);
         }
-        
+        $generator->setJavascriptClientsDirectory("//Volumes//Data//proj//konsole//src//ui//src//app//crm//api//");
         $generator->commit();
         
         $this->assertContains('Hello World', "Hello World");
