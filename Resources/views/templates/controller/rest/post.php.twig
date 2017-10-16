@@ -5,11 +5,14 @@ $form = $this->createForm('{{ entity.fullClass|replace({'Entity': 'Form'}) }}Typ
 
 $input = json_decode($request->getContent(), true);
 $data = array();
-foreach($input as $k => $v){
-	// TODO remove this sh*t
-	$k = \Mosaika\RadBundle\Utils\GeneratorUtils::dbToProperty($k);
-	if($form->has($k)){
-		$data[$k] = $v;
+
+foreach($form as $k => $field){
+	if(isset($input[$k])){
+		$data[$k] = $input[$k];
+	}else if(isset($input[$k])){
+		//TODO $k can be snake_case'd
+	}else{
+		$form->remove($k);
 	}
 }
 if($form->submit($data)->isValid()){
@@ -21,5 +24,9 @@ if($form->submit($data)->isValid()){
 return "";
 {% endif %}
 }else{
-	return new View("Invalid request", Response::HTTP_NOT_ACCEPTABLE);
+	$errors = array();
+	foreach($form->getErrors() as $err){
+		$errors[$err->getOrigin()->getName()] = $err->getMessage();
+	}
+	return new View($errors, Response::HTTP_NOT_ACCEPTABLE);
 }	

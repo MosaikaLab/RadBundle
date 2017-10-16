@@ -113,7 +113,7 @@ class RadEntityGenerator extends RadGeneratorBase {
 	            );
 	    }
 	    if(true || !file_exists($formPath)){
-	    	$this->runCommand(["command" => "generate:doctrine:form","entity" => $entity->getDoctrineName()]);
+		    	//$this->runCommand(["command" => "generate:doctrine:form","entity" => $entity->getDoctrineName()]);
 	    }
         return $this;
 	}
