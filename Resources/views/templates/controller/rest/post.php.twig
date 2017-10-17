@@ -11,10 +11,10 @@ foreach($form as $k => $field){
 	$k = strtolower(substr($k,0,1)) . substr($k,1);
 	if(isset($input[$k])){
 		$type = $field->getConfig()->getType()->getInnerType();
+		$data[$k] = $input[$k];
 		if($type instanceof \Symfony\Component\Form\Extension\Core\Type\DateType){
-			$data[$k] = "2017-02-02";
+			//$data[$k] = "2017-02-02";
 		}else{
-			$data[$k] = $input[$k];
 		}
 	}else{
 		$form->remove($k);

@@ -30,7 +30,7 @@ class DateField extends StringField{
     }
     
     public function getFormTypeAttributes(){
-    		return array("format" => "U");
+    		return array("widget" => "single_text");
     }
     
 }
