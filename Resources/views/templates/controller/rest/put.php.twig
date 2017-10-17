@@ -8,13 +8,18 @@ $form = $this->createForm('{{ entity.fullClass|replace({'Entity': 'Form'}) }}Typ
 $input = json_decode($request->getContent(), true);
 $data = array();
 foreach($form as $k => $field){
+	$k = str_replace(' ', '', ucwords(str_replace('_', ' ', $k)));
+	$k = strtolower(substr($k,0,1)) . substr($k,1);
 	if(isset($input[$k])){
-		$data[$k] = $input[$k];
-	}else if(isset($input[$k])){
-		//TODO $k can be snake_case'd
+		$type = $field->getConfig()->getType()->getInnerType();
+		if($type instanceof \Symfony\Component\Form\Extension\Core\Type\DateType){
+			$data[$k] = "2017-02-02";
+		}else{
+			$data[$k] = $input[$k];
+		}
 	}else{
 		$form->remove($k);
-	}
+	}	
 }
 if($form->submit($data)->isValid()){
     $em->persist($item);
@@ -26,7 +31,7 @@ return "";
 {% endif %}
 }else{
     $errors = array();
-    foreach($form->getErrors() as $err){
+    foreach($form->getErrors(true) as $err){
     		$errors[$err->getOrigin()->getName()] = $err->getMessage();
     }
     return new View($errors, Response::HTTP_NOT_ACCEPTABLE);

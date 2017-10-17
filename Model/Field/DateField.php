@@ -23,6 +23,15 @@ class DateField extends StringField{
 	    	$this->now = $b;
 	    	return $this;
     }
+    public function getAnnotations(){
+	    	$a = parent::getAnnotations();
+	    	$a[] = '@JMS\Serializer\Annotation\Type("DateTime<\'U\'>")';
+	    	return $a;
+    }
+    
+    public function getFormTypeAttributes(){
+    		return array("format" => "U");
+    }
     
 }
 

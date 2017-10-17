@@ -20,6 +20,15 @@ class RadEntityField{
     public function getAnnotations(){
 	    	return [];
     }
+    /**
+     * Returns the class used for the form builder
+     */
+    public function getFormTypeClass(){
+	    	return null;
+    }
+    public function getFormTypeAttributes(){
+	    	return null;
+    }
     
     /**
      * @param string $varName Name of the entity object

@@ -73,6 +73,7 @@ class RadListenerTest {
 		->setTableName("quotation")
 		->addField(IdField::create("id"))
 		->addField(StringField::create("title"))
+		->addField(StringField::create("status"))
 		->addField(TextField::create("num"))
 		->addField(DateField::create("date"))
 		->addField(DateTimeField::create("createdAt")->setNowDefaultValue())
