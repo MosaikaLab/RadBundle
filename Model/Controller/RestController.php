@@ -9,6 +9,8 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Mosaika\RadBundle\Model\Controller\Action\SaveActionConfig;
 use Mosaika\RadBundle\Model\Controller\Action\ListActionConfig;
+use Nette\PhpGenerator\Method;
+use Symfony\Component\HttpFoundation\Request;
 
 class RestController extends RadController{
 	/**
@@ -42,6 +44,16 @@ class RestController extends RadController{
 		return $this->entity;
 	}
 	
+	public function getMethods(){
+		$methods = parent::getMethods();
+		$onFill = new Method("_onFill" . $this->entity->getName());
+		$onFill->addParameter("item")->setTypeHint($this->entity->getFullClass());
+		$onFill->addParameter("input")->setTypeHint("array");
+		$onFill->addParameter("request")->setTypeHint(Request::class);
+		$methods[] = $onFill;
+		return $methods;
+	}
+	
 	
 	/**
 	 * @param string $name Action name
@@ -62,6 +74,12 @@ class RestController extends RadController{
 				"format" => $this->format,
 				"entity" => $this->entity
 		));
+		$method = new Method("_onListRest");
+		$method->addComment("@param " . $this->entity->getFullClass() . "[] \$items");
+		$method->addComment("@return " . $this->entity->getFullClass() . "[]");
+		$method->addParameter("items");
+		$method->setBody("return \$items;");
+		$this->methods[] = $method;
 		
 		$this->actions[] = $action = RadControllerAction::create($name,$this,"");
 		$action
@@ -90,6 +108,14 @@ class RestController extends RadController{
 				"format" => $this->format,
 				"entity" => $this->entity
 		));
+		
+		$method = new Method("_onGetRest");
+		$method->addComment("@param " . $this->entity->getFullClass() . " \$item");
+		$method->addComment("@return " . $this->entity->getFullClass());
+		$method->addParameter("item")->setTypeHint($this->entity->getFullClass());
+		$method->setReturnType($this->entity->getFullClass());
+		$method->setBody("return \$item;");
+		$this->methods[] = $method;
 		
 		$this->actions[] = $action = RadControllerAction::create($name,$this,"");
 		$action

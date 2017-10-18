@@ -2,6 +2,7 @@
 namespace Mosaika\RadBundle\Model;
 
 use Mosaika\RadBundle\Model\Query\RadQuery;
+use Nette\PhpGenerator\Method;
 
 class RadController extends RadClassable{
         
@@ -15,6 +16,12 @@ class RadController extends RadClassable{
     protected $baseRoute;
     
     /**
+     * 
+     * @var Method[]
+     */
+    protected $methods;
+    
+    /**
      * @var RadQuery[]
      */
     protected $queries;
@@ -23,6 +30,7 @@ class RadController extends RadClassable{
         parent::__construct($name, $namespace, $bundle);
         $this->actions = [];
         $this->queries = [];
+        $this->methods = [];
     }
     
     /**
@@ -93,6 +101,22 @@ class RadController extends RadClassable{
 		$this->queries[] = $query;
 		return $this;
 	}
+	/**
+	 * @return \Nette\PhpGenerator\Method[] 
+	 */
+	public function getMethods() {
+		return $this->methods;
+	}
+
+	/**
+	 * @param \Nette\PhpGenerator\Method $method
+	 * @return self
+	 */
+	public function addMethod($method) {
+		$this->methods[] = $method;
+		return $this;
+	}
+
 	
 }
 

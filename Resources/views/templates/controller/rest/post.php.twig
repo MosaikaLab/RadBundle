@@ -12,15 +12,12 @@ foreach($form as $k => $field){
 	if(isset($input[$k])){
 		$type = $field->getConfig()->getType()->getInnerType();
 		$data[$k] = $input[$k];
-		if($type instanceof \Symfony\Component\Form\Extension\Core\Type\DateType){
-			//$data[$k] = "2017-02-02";
-		}else{
-		}
 	}else{
 		$form->remove($k);
 	}	
 }
 if($form->submit($data)->isValid()){
+	$this->_onFill{{ entity.name }}($item, $input, $request);
     $em->persist($item);
     $em->flush();
 {% if format == 'json' %}

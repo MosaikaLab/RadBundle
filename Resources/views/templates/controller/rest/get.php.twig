@@ -4,6 +4,7 @@
 $em = $this->getDoctrine()->getManager();
 $repository = $em->getRepository("{{ entity.getDoctrineName() }}");
 $result = $repository->find($id);
+$result = $this->_onGetRest($result);
 if($result===null){
 	return new View("{{ entity.name }} not found", Response::HTTP_NOT_FOUND);
 }

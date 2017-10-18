@@ -14,6 +14,10 @@ use Mosaika\RadBundle\Model\Field\ManyToOneField;
 use Mosaika\RadBundle\Model\Field\JsonField;
 use Mosaika\RadBundle\Model\Query\RadQueryFilter;
 use Mosaika\RadBundle\Event\BuildEvent;
+use Mosaika\RadBundle\Model\Field\IntegerField;
+use Mosaika\RadBundle\Model\Field\FloatField;
+use Mosaika\RadBundle\Model\Field\BooleanField;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 class RadListenerTest {
 	public function onRadBuild(BuildEvent $event){
@@ -80,6 +84,50 @@ class RadListenerTest {
 		->addField(DateTimeField::create("updatedAt")->setNowDefaultValue())
 		->addField(OneToManyField::create("client",$entityNs . "Client"))
 		;
+		
+		// Quotation Items
+		$entities["income_item"] = $factory->createEntity("IncomeItem","",$bundle)
+		->setTableName("income_item")
+		;
+		$entities["outcome_item"] = $factory->createEntity("OutcomeItem","",$bundle)
+		->setTableName("outcome_item")
+		;
+		$items = [$entities["outcome_item"], $entities["income_item"]];
+		foreach($items as $item){
+			$item
+			->addField(IdField::create("id"))
+			->addField(OneToManyField::create("quotation",$entityNs . "Quotation"))
+			->addField(IntegerField::create("ordering"))
+			->addField(TextField::create("description"))
+			->addField(TextField::create("notes"))
+			->addField(TextField::create("color"))
+			
+			->addField(IntegerField::create("quantity"))
+			->addField(FloatField::create("price"))
+			->addField(FloatField::create("discount"))
+			->addField(StringField::create("discountType"))
+			->addField(FloatField::create("total"))
+			->addField(FloatField::create("totalNoDiscount"))
+			
+			->addField(BooleanField::create("bef"))
+			->addField(BooleanField::create("hidden"))
+			->addField(BooleanField::create("consumptive"))
+			->addField(BooleanField::create("alternative"))
+			;
+		}
+		
+		$entities["income_item"]->addField(StringField::create("type")->setDefaultValue("outcome"));
+		
+		$entities["outcome_item"]
+		->addField(StringField::create("type")->setDefaultValue("outcome"))
+		->addField(BooleanField::create("befReverse"))
+		->addField(BooleanField::create("showVendor"))
+		->addField(StringField::create("vendorName"))
+		->addField(StringField::create("vendorRif"))
+		->addField(FloatField::create("gain"))
+		->addField(BooleanField::create("subtract"))
+		;
+		
 		
 		foreach($entities as $entityKey => $entity){
 			$crud = new RestController(null, "Api", $bundle);
