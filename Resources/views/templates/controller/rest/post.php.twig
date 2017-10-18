@@ -1,34 +1,16 @@
 $em = $this->getDoctrine()->getManager();
 $repository = $em->getRepository('{{ entity.doctrineName }}');
-$item = new {{ entity.fullClass }}();
-$form = $this->createForm('{{ entity.fullClass|replace({'Entity': 'Form'}) }}Type',$item);
+$formType = '{{ entity.fullClass|replace({'Entity': 'Form'}) }}Type';
+$form = $this->createForm($formType,$item);
 
 $input = json_decode($request->getContent(), true);
-$data = array();
 
-foreach($form as $k => $field){
-	$k = str_replace(' ', '', ucwords(str_replace('_', ' ', $k)));
-	$k = strtolower(substr($k,0,1)) . substr($k,1);
-	if(isset($input[$k])){
-		$type = $field->getConfig()->getType()->getInnerType();
-		$data[$k] = $input[$k];
-	}else{
-		$form->remove($k);
-	}	
-}
-if($form->submit($data)->isValid()){
-	$this->_onFill{{ entity.name }}($item, $input, $request);
-    $em->persist($item);
-    $em->flush();
-{% if format == 'json' %}
-    return $item;
-{% else %}
-return "";
-{% endif %}
+$serializer = new {{ entity.fullClass|replace({"Entity": "Serializer"}) }}Serializer($this->container);
+$item = $serializer->unserialize($input, $formType);
+if($item){
+	$em->persist($item);
+	$em->flush();
+	return $item;
 }else{
-	$errors = array();
-	foreach($form->getErrors(true) as $err){
-		$errors[$err->getOrigin()->getName()] = $err->getMessage();
-	}
-	return new View($errors, Response::HTTP_NOT_ACCEPTABLE);
-}	
+	return new View($serializer->getErrors(), Response::HTTP_NOT_ACCEPTABLE);
+}

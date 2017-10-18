@@ -86,6 +86,7 @@ class RadGenerator{
     public function commit(){
     		$this->_commit(RadEntityGenerator::get($this->container), $this->entities);
     		$this->_commit(RadFormGenerator::get($this->container), $this->entities);
+    		$this->_commit(RadSerializerGenerator::get($this->container), $this->entities);
     		$this->_commit(RadControllerGenerator::get($this->container), $this->controllers);
 	   	$this->_commit(RadEntityRepositoryGenerator::get($this->container), $this->repositories);
     }

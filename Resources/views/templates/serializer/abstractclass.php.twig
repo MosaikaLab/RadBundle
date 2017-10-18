@@ -1,0 +1,100 @@
+namespace {{ ns }};
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+class {{ name }}{
+	/**
+	 * 
+	 * @var array
+	 */
+	protected $errors;
+	
+	/**
+	 *
+	 * @var ContainerInterface
+	 */
+	protected $container;
+	
+	/**
+	 *
+	 */
+	protected $repository;
+	
+	/**
+	 * 
+	 * @param ContainerInterface $container
+	 */
+	public function __construct($container){
+		$this->container = $container;
+		$this->repository = $container->get("doctrine")->getManager()->getRepository('{{entity.doctrineName}}');
+	}
+	/**
+	 * 
+	 * @param string $type Class of type
+	 * @param {{entity.fullClass}} $entity
+	 */
+	public function getForm($type, $entity){
+		$form = $this->container->get('form.factory')->create($type, $entity, array(
+				
+		));
+	}
+	/**
+	 * 
+	 * @param array $array
+	 * @param string $formType Form type class
+	 * @param {{entity.fullClass}} $entity Entity to serialize, null to create new instance or load by array["id"] 
+	 * @return {{entity.fullClass}}
+	 */
+	public function unserialize($array, $formType,$entity=null){
+		if(!$entity){
+			if(isset($array["id"]) && intval($array["id"]) > 0){
+				$entity = $this->repository->find(intval($array["id"]));
+			}else{
+				$entity = new {{ entity.fullClass }};
+			}
+		}
+		$form = $this->getForm($entity, $formType);
+		$data = array();
+		foreach($form as $k => $field){
+			$k = str_replace(' ', '', ucwords(str_replace('_', ' ', $k)));
+			$k = strtolower(substr($k,0,1)) . substr($k,1);
+			if(isset($input[$k])){
+				$type = $field->getConfig()->getType()->getInnerType();
+				$data[$k] = $input[$k];
+				if($type instanceof \Symfony\Component\Form\Extension\Core\Type\DateType){
+					
+				}else{
+				}
+			}else{
+				$form->remove($k);
+			}
+		}
+		
+		if($form->submit($data)->isValid()){
+			return $item;
+		}else{
+			$errors = array();
+			foreach($form->getErrors(true) as $err){
+				$errors[$err->getOrigin()->getName()] = $err->getMessage();
+			}
+			$this->errors = $errors;
+			return null;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param {{entity.fullClass}} $entity
+	 */
+	public function serialize($entity){
+		// Serializer built-in with JSM
+		return $entity;
+	}
+	/**
+	 * @return array
+	 */
+	public function getErrors() {
+		return $this->errors;
+	}
+
+	
+}
