@@ -36,6 +36,22 @@ class {{ name }}{
 		$form = $this->container->get('form.factory')->create($type, $entity, array(
 				
 		));
+		return $form;
+	}
+	
+	protected function dbToProperty($dbName){
+		$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $dbName)));
+		$str = strtolower(substr($str,0,1)) . substr($str,1);
+		return $str;
+	}
+	protected function propertyToDb($input){
+		$matches = array();
+		preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $input, $matches);
+		$ret = $matches[0];
+		foreach ($ret as &$match) {
+			$match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
+		}
+		return implode('_', $ret);
 	}
 	/**
 	 * 
@@ -44,7 +60,7 @@ class {{ name }}{
 	 * @param {{entity.fullClass}} $entity Entity to serialize, null to create new instance or load by array["id"] 
 	 * @return {{entity.fullClass}}
 	 */
-	public function unserialize($array, $formType,$entity=null){
+	public function unserialize($array, $formType="{{ defaultForm }}",$entity=null){
 		if(!$entity){
 			if(isset($array["id"]) && intval($array["id"]) > 0){
 				$entity = $this->repository->find(intval($array["id"]));
@@ -52,25 +68,27 @@ class {{ name }}{
 				$entity = new {{ entity.fullClass }};
 			}
 		}
-		$form = $this->getForm($entity, $formType);
+		$form = $this->getForm($formType, $entity);
 		$data = array();
-		foreach($form as $k => $field){
-			$k = str_replace(' ', '', ucwords(str_replace('_', ' ', $k)));
-			$k = strtolower(substr($k,0,1)) . substr($k,1);
-			if(isset($input[$k])){
+		foreach($form as $fieldName => $field){
+			$k = $this->propertyToDb($fieldName);
+			if(isset($array[$k])){
 				$type = $field->getConfig()->getType()->getInnerType();
-				$data[$k] = $input[$k];
-				if($type instanceof \Symfony\Component\Form\Extension\Core\Type\DateType){
-					
-				}else{
+				$data[$fieldName] = $array[$k];
+				if($type instanceof \Symfony\Bridge\Doctrine\Form\Type\EntityType){
+					if(is_array($data[$fieldName]) && isset($data[$fieldName]["id"])){
+						$data[$fieldName] = $data[$fieldName]["id"];
+					}else if(!is_numeric($data[$fieldName])){
+						$form->remove($fieldName);
+					}
 				}
 			}else{
-				$form->remove($k);
+				$form->remove($fieldName);
 			}
 		}
 		
 		if($form->submit($data)->isValid()){
-			return $item;
+			return $entity;
 		}else{
 			$errors = array();
 			foreach($form->getErrors(true) as $err){

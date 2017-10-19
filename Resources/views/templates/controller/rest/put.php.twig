@@ -6,15 +6,15 @@ if(!$item){
 }
 
 $formType = '{{ entity.fullClass|replace({'Entity': 'Form'}) }}Type';
-$form = $this->createForm($formType,$item);
-
 $input = json_decode($request->getContent(), true);
 
 $serializer = new {{ entity.fullClass|replace({"Entity": "Serializer"}) }}Serializer($this->container);
 $item = $serializer->unserialize($input, $formType,$item);
 if($item){
+	$this->_onFill{{ entity.name }}($item, $input, $request);
 	$em->persist($item);
 	$em->flush();
+	$item = $this->_onGetRest($item);
 	return $item;
 }else{
 	return new View($serializer->getErrors(), Response::HTTP_NOT_ACCEPTABLE);

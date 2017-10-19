@@ -35,6 +35,7 @@ class RadSerializerGenerator extends RadGeneratorBase {
 				"entity" => $entity,
 				"ns" => $abstractNs,
 				"name" => $abstractName,
+				"defaultForm" => $this->findNamespace("Form") . "\\" . $entity->getName() . "Type",
 				"helper" => $this,
 		));
 		$class = $this->compileTwig("serializer/class.php.twig", array(
