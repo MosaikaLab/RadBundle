@@ -46,6 +46,8 @@ class RadFormGenerator extends RadGeneratorBase {
 	    $buildForm->addParameter("options")->setTypeHint("array");
 	    $buildForm->addBody('$builder');
 	    foreach($entity->getFields() as $field){
+	    		if(!$field->getUserWritable())
+	    			continue;
 		    	$name = $field->getName();
 		    	$type = $field->getFormTypeClass();
 		    	$attr = $field->getFormTypeAttributes();

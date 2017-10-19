@@ -17,6 +17,8 @@ class RadEntityField{
     
     protected $defaultValue;
     
+    protected $userWritable = true;
+    
     public function getAnnotations(){
 	    	return [];
     }
@@ -171,6 +173,22 @@ class RadEntityField{
         $this->defaultValue = $defaultValue;
         return $this;
     }
+	/**
+	 * @return boolean
+	 */
+	public function getUserWritable() {
+		return $this->userWritable;
+	}
+
+	/**
+	 * @param boolean $userWritable
+	 * @return RadEntityField
+	 */
+	public function setUserWritable($userWritable) {
+		$this->userWritable = $userWritable;
+		return $this;
+	}
+
 
 
     
