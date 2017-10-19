@@ -62,93 +62,6 @@ class RadListenerTest {
 		->addField(OneToManyField::create("category",$entityNs . "Category","posts"))
 		;
 		
-		// Client
-		$entities["client"] = $factory->createEntity("Client","",$bundle)
-		->setTableName("client")
-		->addField(IdField::create("id"))
-		->addField(StringField::create("name"))
-		->addField(TextField::create("address"))
-		->addField(TextField::create("vat"))
-		->addField(DateTimeField::create("createdAt")->setNowDefaultValue())
-		->addField(DateTimeField::create("updatedAt")->setNowDefaultValue())
-		;
-		
-		// Quotation
-		$entities["quotation"] = $factory->createEntity("Quotation","",$bundle)
-		->setTableName("quotation")
-		->addField(IdField::create("id"))
-		->addField(StringField::create("title"))
-		->addField(StringField::create("publishStatus"))
-		->addField(TextField::create("num"))
-		->addField(DateField::create("date"))
-		->addField(IntegerField::create("chance"))
-		->addField(DateTimeField::create("createdAt")->setNowDefaultValue()->setUserWritable(false))
-		->addField(DateTimeField::create("updatedAt")->setNowDefaultValue()->setUserWritable(false))
-		->addField(OneToManyField::create("status", $entityNs . "QuotationStatus"))
-		->addField(OneToManyField::create("client",$entityNs . "Client"))
-		;
-		// Quotation status
-		$entities["quotation_status"] = $factory->createEntity("QuotationStatus","",$bundle)
-		->setTableName("quotation_status")
-		->addField(IdField::create("id"))
-		->addField(StringField::create("title"))
-		->addField(StringField::create("slug"))
-		;
-		
-		$entities["quotation_payment"] = $factory->createEntity("QuotationPayment","",$bundle)
-		->setTableName("quotation_payment")
-		->addField(IdField::create("id"))
-		->addField(OneToManyField::create("quotation",$entityNs . "Quotation"))
-		->addField(IntegerField::create("ordering"))
-		->addField(StringField::create("description"))
-		->addField(FloatField::create("price"))
-		->addField(BooleanField::create("bef"))
-		;
-		
-		// Quotation Items
-		$entities["income_item"] = $factory->createEntity("IncomeItem","",$bundle)
-		->setTableName("income_item")
-		;
-		$entities["outcome_item"] = $factory->createEntity("OutcomeItem","",$bundle)
-		->setTableName("outcome_item")
-		;
-		$items = [$entities["outcome_item"], $entities["income_item"]];
-		foreach($items as $item){
-			$item
-			->addField(IdField::create("id"))
-			->addField(OneToManyField::create("quotation",$entityNs . "Quotation"))
-			->addField(IntegerField::create("ordering"))
-			->addField(StringField::create("title"))
-			->addField(TextField::create("description"))
-			->addField(TextField::create("notes"))
-			->addField(TextField::create("color"))
-			
-			->addField(IntegerField::create("quantity"))
-			->addField(FloatField::create("price"))
-			->addField(FloatField::create("discount"))
-			->addField(StringField::create("discountType"))
-			->addField(FloatField::create("total"))
-			->addField(FloatField::create("totalNoDiscount"))
-			
-			->addField(BooleanField::create("bef"))
-			->addField(BooleanField::create("hidden"))
-			->addField(BooleanField::create("consumptive"))
-			->addField(BooleanField::create("alternative"))
-			;
-		}
-		
-		$entities["income_item"]->addField(StringField::create("type")->setDefaultValue("outcome"));
-		
-		$entities["outcome_item"]
-		->addField(StringField::create("type")->setDefaultValue("outcome"))
-		->addField(BooleanField::create("brf"))
-		->addField(BooleanField::create("showVendor"))
-		->addField(StringField::create("vendorName"))
-		->addField(StringField::create("vendorRif"))
-		->addField(FloatField::create("gain"))
-		->addField(BooleanField::create("subtract"))
-		;
-		
 		
 		foreach($entities as $entityKey => $entity){
 			$crud = new RestController(null, "Api", $bundle);
@@ -234,7 +147,6 @@ class RadListenerTest {
 		foreach($repositories as $repositoryKey => $repository){
 			$generator->addRepository($repository,$repositoryKey);
 		}
-		$generator->setJavascriptClientsDirectory("//Volumes//Data//proj//konsole//src//ui//src//app//crm//api//");
 		
 		
 	}
