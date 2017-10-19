@@ -18,6 +18,7 @@ use Mosaika\RadBundle\Model\Field\IntegerField;
 use Mosaika\RadBundle\Model\Field\FloatField;
 use Mosaika\RadBundle\Model\Field\BooleanField;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 
 class RadListenerTest {
 	public function onRadBuild(BuildEvent $event){
@@ -77,12 +78,31 @@ class RadListenerTest {
 		->setTableName("quotation")
 		->addField(IdField::create("id"))
 		->addField(StringField::create("title"))
-		->addField(StringField::create("status"))
+		->addField(StringField::create("publishStatus"))
 		->addField(TextField::create("num"))
 		->addField(DateField::create("date"))
-		->addField(DateTimeField::create("createdAt")->setNowDefaultValue())
-		->addField(DateTimeField::create("updatedAt")->setNowDefaultValue())
+		->addField(IntegerField::create("chance"))
+		->addField(DateTimeField::create("createdAt")->setNowDefaultValue()->setUserWritable(false))
+		->addField(DateTimeField::create("updatedAt")->setNowDefaultValue()->setUserWritable(false))
+		->addField(OneToManyField::create("status", $entityNs . "QuotationStatus"))
 		->addField(OneToManyField::create("client",$entityNs . "Client"))
+		;
+		// Quotation status
+		$entities["quotation_status"] = $factory->createEntity("QuotationStatus","",$bundle)
+		->setTableName("quotation_status")
+		->addField(IdField::create("id"))
+		->addField(StringField::create("title"))
+		->addField(StringField::create("slug"))
+		;
+		
+		$entities["quotation_payment"] = $factory->createEntity("QuotationPayment","",$bundle)
+		->setTableName("quotation_payment")
+		->addField(IdField::create("id"))
+		->addField(OneToManyField::create("quotation",$entityNs . "Quotation"))
+		->addField(IntegerField::create("ordering"))
+		->addField(StringField::create("description"))
+		->addField(FloatField::create("price"))
+		->addField(BooleanField::create("bef"))
 		;
 		
 		// Quotation Items
@@ -98,6 +118,7 @@ class RadListenerTest {
 			->addField(IdField::create("id"))
 			->addField(OneToManyField::create("quotation",$entityNs . "Quotation"))
 			->addField(IntegerField::create("ordering"))
+			->addField(StringField::create("title"))
 			->addField(TextField::create("description"))
 			->addField(TextField::create("notes"))
 			->addField(TextField::create("color"))
@@ -120,7 +141,7 @@ class RadListenerTest {
 		
 		$entities["outcome_item"]
 		->addField(StringField::create("type")->setDefaultValue("outcome"))
-		->addField(BooleanField::create("befReverse"))
+		->addField(BooleanField::create("brf"))
 		->addField(BooleanField::create("showVendor"))
 		->addField(StringField::create("vendorName"))
 		->addField(StringField::create("vendorRif"))
