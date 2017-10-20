@@ -77,9 +77,11 @@ class RadEntity extends RadClassable{
 
     /**
      * @param boolean $lifeCycle
+     * @return self
      */
-    public function setLifeCycle($lifeCycle){
+    public function setLifeCycle($lifeCycle=true){
         $this->lifeCycle = $lifeCycle;
+        return $this;
     }
 
     /**

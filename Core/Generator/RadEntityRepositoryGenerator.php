@@ -58,6 +58,8 @@ class RadEntityRepositoryGenerator extends RadGeneratorBase {
 	    ->setExtends("Doctrine\\ORM\\EntityRepository")
 	    ;
 	    
+	    $modelClass->addConstant("ID", $entity->getDoctrineName());
+	    
 	    $repoClass = (new ClassType($repository->getName(), $repoNs))
 	    ->setExtends($modelNs->getName() . "\\" . $modelClass->getName())
 	    ;
@@ -99,13 +101,15 @@ class RadEntityRepositoryGenerator extends RadGeneratorBase {
 	    		"<?php" . PHP_EOL . $modelNs . $modelClass
 	    	);
 	    
-	    echo "Writing file " . $repoPath . PHP_EOL;
-	    if(true || !file_exists($repoPath)){
+	    if(!file_exists($repoPath)){
+		    	echo "Writing file " . $repoPath . PHP_EOL;
 		    	// Write Entity class
 		    	file_put_contents(
 	    			$repoPath,
 	    			"<?php" . PHP_EOL . $repoNs . $repoClass
 	    		);
+	    }else{
+		    	echo "Skipping file " . $repoPath . PHP_EOL;
 	    }
 	    
 	}

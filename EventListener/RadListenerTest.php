@@ -22,6 +22,7 @@ use Doctrine\ORM\Mapping\OneToMany;
 
 class RadListenerTest {
 	public function onRadBuild(BuildEvent $event){
+		return;
 		$generator = $event->getGenerator();
 		$container = $generator->getContainer();
 		

@@ -77,8 +77,11 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    $entityClass->setExtends($modelNs->getName() . "\\" . $modelClass->getName());
 	    
 	    $entityClass->addComment(
-	    		sprintf('@Doctrine\ORM\Mapping\Table(name="%s")',$entity->getTableName())
+	    		sprintf('@Doctrine\\ORM\\Mapping\\Table(name="%s")',$entity->getTableName())
 	    	);
+	    if($entity->getLifeCycle()){
+		    	$entityClass->addComment('@Doctrine\\ORM\\HasLifecycleCallbacks()');
+	    }
 	    
 	    $modelDir = $this->getWorkingPath("Model");
 	    $formDir = $this->getWorkingPath("Form");
@@ -105,12 +108,14 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    );
 	    
 	    // Write Entity class - Doesnt 
-	    if(!file_exists($entityPath)){
+	    if(true || !file_exists($entityPath)){
 		    	echo "Writing file " . $entityPath . PHP_EOL;
 	        file_put_contents(
 	            $entityPath,
 	            "<?php" . PHP_EOL . $entityNs . $entityClass
 	            );
+	    }else{
+		    	echo "Skipping file " . $entityPath . PHP_EOL;
 	    }
 	    if(true || !file_exists($formPath)){
 		    	//$this->runCommand(["command" => "generate:doctrine:form","entity" => $entity->getDoctrineName()]);
