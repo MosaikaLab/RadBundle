@@ -69,7 +69,7 @@ class RadGenerator{
      * @return \Mosaika\RadBundle\Core\Generator\RadGenerator
      */
     public function addEntity($entity,$key){
-    	if(!$entity->getBundle()){
+   	 	if(!$entity->getBundle()){
 	    		$entity->setBundle($this->bundle);
 	    	}
 	    	$this->entities[$key] = $entity;
@@ -92,9 +92,10 @@ class RadGenerator{
     }
     
     public function _commit($generator, $collection){
-        $generator->setBundle($this->bundle);
+        //$generator->setBundle($this->bundle);
 echo PHP_EOL . PHP_EOL . "Committing " . get_class($generator) . PHP_EOL;
         foreach($collection as $c){
+        		$generator->setBundle($c->getBundle());
             $generator->commit($c);
         }
     }
