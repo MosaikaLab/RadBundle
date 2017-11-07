@@ -113,7 +113,7 @@ class RestController extends RadController{
 		$method->addComment("@param " . $this->entity->getFullClass() . " \$item");
 		$method->addComment("@return " . $this->entity->getFullClass());
 		$method->addParameter("item")->setTypeHint($this->entity->getFullClass());
-		$method->setReturnType($this->entity->getFullClass());
+		//$method->setReturnType($this->entity->getFullClass());
 		$method->setBody("return \$item;");
 		$this->methods[] = $method;
 		
