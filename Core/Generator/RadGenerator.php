@@ -93,7 +93,7 @@ class RadGenerator{
     
     public function _commit($generator, $collection){
 		foreach($collection as $c){
-			$generator->setBundle($this->bundle);
+			$generator->setBundle($c->getBundle());
 echo PHP_EOL . PHP_EOL . "Committing " . get_class($generator) . PHP_EOL;
             $generator->commit($c);
         }
