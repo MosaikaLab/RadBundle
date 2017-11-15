@@ -25,7 +25,7 @@ class JsonField extends TextField{
         $res = parent::getMethods($modelClass);
         $setterBody = explode("\n",$res[0]->getBody());
         $res[0]->setBody("");
-        $res[0]->addBody(sprintf('if(is_object($%s)){ $%s = json_encode($%s); }',$this->name,$this->name,$this->name));
+        $res[0]->addBody(sprintf('if(is_object($%s) || is_array($%s)){ $%s = json_encode($%s); }',$this->name,$this->name,$this->name,$this->name));
         foreach($setterBody as $s){
             $res[0]->addBody($s);
         }
@@ -33,10 +33,11 @@ class JsonField extends TextField{
         
         $keyMethod = $modelClass->addMethod($res[1]->getName())
         ->addComment("@return mixed")
-        ->addBody(sprintf('if(is_string($this->%s)){ $this->%s = json_decode($this->%s); }',$this->name,$this->name,$this->name))
-        ->addBody(sprintf('if(!$key) return $this->%s;',$this->name)) 
+        ->addBody(sprintf('if(is_string($this->%s)){ $%s = json_decode($this->%s,true); }',$this->name,$this->name,$this->name))
+        ->addBody(sprintf('else{ $%s = $this->%s; }',$this->name,$this->name))
+        ->addBody(sprintf('if(!$key) return $%s;',$this->name)) 
         ->addBody('$parts = explode(".",$key);')
-        ->addBody(sprintf('$var = $this->%s();',$res[1]->getName()))
+        ->addBody(sprintf('$var = $%s();',$res[1]->getName()))
         ->addBody('foreach($parts as $p){')
         ->addBody('	if(!isset($var[$p]))')
         ->addBody('		return $defaultValue;')
