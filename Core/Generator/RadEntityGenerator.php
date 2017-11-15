@@ -109,7 +109,7 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    );
 	    
 	    // Write Entity class - Doesnt 
-	    if(true || !file_exists($entityPath)){
+	    if(!file_exists($entityPath)){
 		    	echo "Writing file " . $entityPath . PHP_EOL;
 	        file_put_contents(
 	            $entityPath,
