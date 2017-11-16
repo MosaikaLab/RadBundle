@@ -37,7 +37,7 @@ class JsonField extends TextField{
         ->addBody(sprintf('else{ $%s = $this->%s; }',$this->name,$this->name))
         ->addBody(sprintf('if(!$key) return $%s;',$this->name)) 
         ->addBody('$parts = explode(".",$key);')
-        ->addBody(sprintf('$var = $%s();',$res[1]->getName()))
+        ->addBody(sprintf('$var = $this->%s();',$res[1]->getName()))
         ->addBody('foreach($parts as $p){')
         ->addBody('	if(!isset($var[$p]))')
         ->addBody('		return $defaultValue;')
@@ -52,6 +52,24 @@ class JsonField extends TextField{
          */
         ;
         $res[1] = $keyMethod;
+        
+        $putMethod = $modelClass->addMethod("put" . substr($res[1]->getName(),3))
+        ->addComment("@return self")
+        ->addBody(sprintf('if(is_string($this->%1$s)){ $%1$s = json_decode($this->%1$s,true); }',$this->name))
+        ->addBody(sprintf('else{ $%1$s = $this->%1$s; }',$this->name))
+        ->addBody(sprintf('$loc = &$%1$s;',$this->name))
+        	
+        	->addBody('foreach(explode(".", $key) as $step){')
+        	->addBody("\t" . '$loc = &$loc[$step];')
+        	->addBody('}')
+        	->addBody('$loc = $value;')
+        	->addBody(sprintf('return $this->' . $res[0]->getName() . '($%s);',$this->name))
+        	
+        	;
+        
+        $putMethod->addParameter("key");
+        $putMethod->addParameter("value");
+        $res[] = $putMethod;
         return $res;
     }
 }
