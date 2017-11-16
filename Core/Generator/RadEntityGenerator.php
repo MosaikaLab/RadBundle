@@ -35,7 +35,6 @@ class RadEntityGenerator extends RadGeneratorBase {
 	}
 	
 	public function commit(RadEntity $entity){
-		print_r($entity);
 	    $modelNs = new PhpNamespace($this->findNamespace("Model"));
 	    $modelNs
 //	    ->addUse("Doctrine\ORM\Mapping","ORM")
