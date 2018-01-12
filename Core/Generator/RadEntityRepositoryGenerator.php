@@ -51,7 +51,7 @@ class RadEntityRepositoryGenerator extends RadGeneratorBase {
 	    $entity = $repository->getEntity();
 	    
 	    $modelNs = new PhpNamespace($this->findNamespace("AbstractRepository"));
-	    $repoNs = new PhpNamespace($this->findNamespace("Entity"));
+	    $repoNs = new PhpNamespace($this->findNamespace("Repository"));
 	    
 	    $modelClass = (new ClassType("Abstract" . $repository->getName(), $modelNs))
 	    ->setAbstract(true)
@@ -89,7 +89,7 @@ class RadEntityRepositoryGenerator extends RadGeneratorBase {
 	    if(!file_exists($modelDir)){
 		    	mkdir($modelDir);
 	    }
-	    $repoDir = $this->getWorkingPath();
+	    $repoDir = $this->getWorkingPath("Repository");
 	    $modelPath = $modelDir. $modelClass->getName() . ".php";
 	    $repoPath = $repoDir. $repository->getName() . ".php";
 		    

@@ -31,13 +31,16 @@ class RadFactory {
 		$bundles = $kernel->getBundles();
 		return new \ReflectionClass(get_class($bundles[$bundle]));
 	}
-	protected function setObjectFullClass($classable){
+	protected function setObjectFullClass($classable,$folder="Entity"){
 		$bundle = $classable->getBundle();
 		$namespace = $classable->getNamespace();
 		$name = $classable->getName();
-		
-		$fs = "\\" . $this->getBundleClass($bundle)->getNamespaceName();
-		$fs .= "\\Entity\\" . $namespace . "\\" . $name;
+		if($bundle=="AppBundle"){
+			$fs = "\\App";
+		}else{
+			$fs = "\\" . $this->getBundleClass($bundle)->getNamespaceName();
+		}
+		$fs .= "\\". $folder ."\\" . $namespace . "\\" . $name;
 		$classable->setFullClass(str_replace("\\\\","\\",$fs));
 	}
 	
@@ -47,7 +50,7 @@ class RadFactory {
 	 */
 	public function createEntityRepository($entity){
 		$repo = new RadEntityRepository($entity->getName() . "Repository", $entity->getNamespace(), $entity->getBundle());
-		$this->setObjectFullClass($repo);
+		$this->setObjectFullClass($repo,"Repository");
 		$repo->setEntity($entity);
 		$entity->setRepository($repo);
 		return $repo;
