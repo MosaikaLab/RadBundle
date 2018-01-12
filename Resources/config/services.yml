@@ -2,15 +2,15 @@ services:
 #    mosaika_rad.example:
 #        class: Mosaika\RadBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
-    Mosaika\RadBundle\Factory\RadFactory:
-        alias: rad.factory
+    rad.factory:
+        public: true
+        class: Mosaika\RadBundle\Factory\RadFactory
         arguments: ["@service_container"]
-        
     rad.build_listener:
         class: Mosaika\RadBundle\EventListener\RadListenerTest
         tags:
             - { name: kernel.event_listener, event: rad.build }
     Mosaika\RadBundle\Command\BuildCommand:
         tags:
-            - { name: 'console.command', command: 'rad:build' }
+            - { name: 'console.command', command: 'app:sunshine' }
     
