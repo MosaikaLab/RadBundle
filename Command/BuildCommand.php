@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Mosaika\RadBundle\Core\Generator\RadGenerator;
 use Mosaika\RadBundle\Event\BuildEvent;
 
-class BuildCommand extends \Symfony\Component\Console\Command\Command
+class BuildCommand extends ContainerAwareCommand
 {
 
     protected $types = array(
