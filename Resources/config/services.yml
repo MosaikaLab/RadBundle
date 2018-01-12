@@ -9,3 +9,7 @@ services:
         class: Mosaika\RadBundle\EventListener\RadListenerTest
         tags:
             - { name: kernel.event_listener, event: rad.build }
+    Mosaika\RadBundle\Command\BuildCommand:
+        tags:
+            - { name: 'console.command', command: 'rad:build' }
+    
