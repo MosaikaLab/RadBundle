@@ -14,13 +14,8 @@
 	],
 	"license" : "MIT",
 	"autoload" : {
-		"psr-0" : {
+		"psr-4" : {
 			"Mosaika\\RadBundle\\" : ""
-		}
-	},
-	"extra" : {
-		"branch-alias" : {
-			"dev-master" : "some_version-dev"
 		}
 	},
 	"require" : {
