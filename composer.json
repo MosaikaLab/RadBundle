@@ -18,10 +18,9 @@
 			"Mosaika\\RadBundle" : ""
 		}
 	},
-	"target-dir" : "Mosaika/RadBundle",
 	"extra" : {
 		"branch-alias" : {
-			"dev-master" : "some_version-dev"
+			"dev-master" : "dev"
 		}
 	},
 	"require" : {
