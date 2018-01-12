@@ -12,5 +12,5 @@ services:
             - { name: kernel.event_listener, event: rad.build }
     Mosaika\RadBundle\Command\BuildCommand:
         tags:
-            - { name: 'console.command', command: 'app:sunshine' }
+            - { name: 'console.command', command: 'rad:build' }
     
