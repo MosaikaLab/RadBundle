@@ -35,7 +35,7 @@ class RadClassable {
 
 	/**
 	 * @param mixed $extends
-	 * @return RadClassable
+	 * @return self
 	 */
 	public function setExtends($extends) {
 		$this->extends = $extends;
@@ -51,7 +51,7 @@ class RadClassable {
 	/**
 	 * Set the fullclass, provided by RadFactory::createEntity
 	 * @param string $fullClass
-	 * @return RadEntity
+	 * @return self
 	 */
 	public function setFullClass($fullClass){
 		$this->fullClass = $fullClass;
@@ -74,7 +74,7 @@ class RadClassable {
 	
 	/**
 	 * @param string $bundle
-	 * @return RadEntity
+	 * @return self
 	 */
 	public function setBundle($bundle){
 		$this->bundle = $bundle;
@@ -83,7 +83,7 @@ class RadClassable {
 	
 	/**
 	 * @param mixed $name
-	 * @return RadEntity
+	 * @return self
 	 */
 	public function setName($name){
 		$this->name = $name;
@@ -98,7 +98,7 @@ class RadClassable {
 
 	/**
 	 * @param mixed $namespace
-	 * @return RadClassable
+	 * @return self
 	 */
 	public function setNamespace($namespace) {
 		$this->namespace = $namespace;
@@ -107,7 +107,7 @@ class RadClassable {
 	/**
 	 * 
 	 * @param string $use
-	 * @return \Mosaika\RadBundle\Model\RadClassable
+	 * @return self
 	 */
 	public function addUse($use,$as=null){
 		$this->uses[] = $use . ($as ? "@" . $as : "");

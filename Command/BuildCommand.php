@@ -62,7 +62,7 @@ class BuildCommand extends ContainerAwareCommand
             if ($input->getOption("append")) {
                 $options["--append"] = true;
             } else {
-                $options["--purge-with-truncate"] = true;
+             	//$options["--purge-with-truncate"] = true;
             }
             $options["-n"] = true;
             $application->run(new \Symfony\Component\Console\Input\ArrayInput($options));
