@@ -99,7 +99,7 @@ class RadFormGenerator extends RadGeneratorBase {
 	    );
 	    
 	    // Write Entity class - Doesnt 
-	    if(true || !file_exists($path)){
+	    if(!file_exists($path)){
 		    	echo "Writing file " . $path . PHP_EOL;
 	        file_put_contents(
 	            $path,
