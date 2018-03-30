@@ -56,8 +56,8 @@ class RadEntityField{
         
         $setter = $modelClass->addMethod(GeneratorUtils::propertyToMethod(ucfirst($name),"set"));
         $setter->addParameter($name);
-        $setter->addComment("@return " . $classFullName);
-        $setter->setReturnType($classFullName);
+        $setter->addComment("@return self");
+        //$setter->setReturnType("self");
         $setter->addBody(sprintf('$this->%s = $%s;',$name, $name));
         $setter->addBody('return $this;');
         ;
