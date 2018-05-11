@@ -41,7 +41,6 @@ class ManyToManyField extends RadEntityField{
         ;
         return $res;
     }
-    //commmento test per push
     public function getDefaultValue(){
         return "new " . self::AC . "()";
     }
