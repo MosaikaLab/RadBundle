@@ -19,6 +19,8 @@ class RadEntityField{
     
     protected $userWritable = true;
     
+    protected $unique=false;
+    
     public function getAnnotations(){
 	    	return [];
     }
@@ -76,8 +78,12 @@ class RadEntityField{
     }
     
     public function getDoctrineColumnAnnotation(){
-        
-        return sprintf('@Doctrine\\ORM\\Mapping\\Column(name="%s",type="%s",nullable=%s)',GeneratorUtils::propertyToDb($this->name),$this->type,$this->nullable ? "true" : "false");
+        $unique = ",unique=" . ($this->unique ? "true" : "false");
+        if(!$this->unique){
+            $unique = "";
+        }
+        $s = '@Doctrine\\ORM\\Mapping\\Column(name="%s",type="%s",nullable=%s' . $unique . ')';
+        return sprintf($s,GeneratorUtils::propertyToDb($this->name),$this->type,$this->nullable ? "true" : "false");
     }
     
     public function setNullable($nullable){
@@ -189,6 +195,23 @@ class RadEntityField{
 		return $this;
 	}
 
+	/**
+	 * Set field as unique constraint
+	 * @param boolean $unique
+	 * @return self
+	 */
+	public function setUnique($unique=true){
+	    $this->unique = $unique;
+	    return $this;
+	}
+	
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function isUnique(){
+	    return $this->unique;
+	}
 
 
     
