@@ -57,7 +57,7 @@ class RadGeneratorBase {
 	}
 	
 	public function getWorkingPath($folder=null){
-		$bundlePath = $this->bundle=="AppBundle" ? "src//" : $this->container->get('kernel')->locateResource('@' . $this->bundle);
+		$bundlePath = $this->bundle=="AppBundle" || $this->bundle=="App" ? "src//" : $this->container->get('kernel')->locateResource('@' . $this->bundle);
 	    $path = $bundlePath . ($folder ? $folder : $this->baseNamespace ). DIRECTORY_SEPARATOR ;
 		if($this->namespace)
 			$path .= $this->namespace . DIRECTORY_SEPARATOR;
@@ -104,7 +104,7 @@ class RadGeneratorBase {
 		return $this->bundle;
 	}
 	public function findNamespace($folder=null){
-		if($this->bundle=="AppBundle"){
+		if($this->bundle=="AppBundle" || $this->bundle == "App"){
 			return "App\\" . $folder;
 		}
 	    $bundleClass = $this->getBundleClass();

@@ -35,7 +35,7 @@ class RadFactory {
 		$bundle = $classable->getBundle();
 		$namespace = $classable->getNamespace();
 		$name = $classable->getName();
-		if($bundle=="AppBundle"){
+		if($bundle=="AppBundle" || $bundle=="App"){
 			$fs = "\\App";
 		}else{
 			$fs = "\\" . $this->getBundleClass($bundle)->getNamespaceName();
