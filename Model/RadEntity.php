@@ -17,7 +17,7 @@ class RadEntity extends RadClassable{
     
     
     public function __construct($name, $namespace, $bundle){
-    		parent::__construct($name,$namespace,$bundle);
+    	parent::__construct($name,$namespace,$bundle);
         $this->fields = [];
         
         $this->tableName = strtolower($name);
