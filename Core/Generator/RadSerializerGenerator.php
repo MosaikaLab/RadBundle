@@ -63,9 +63,9 @@ class RadSerializerGenerator extends RadGeneratorBase {
 	        "<?php" . PHP_EOL .  $abstractClass
 	    );
 	    
-	    // Write Entity class - Doesnt 
-	    if(true || !file_exists($path)){
-		    	echo "Writing file " . $path . PHP_EOL;
+	    // Safely write Serializer class
+	    if(!file_exists($path)){
+		   	echo "Writing file " . $path . PHP_EOL;
 	        file_put_contents(
 	            $path,
 	            "<?php" . PHP_EOL . $class
