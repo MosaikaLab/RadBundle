@@ -82,7 +82,7 @@ class RadEntityField{
         if(!$this->unique){
             $unique = "";
         }
-        $s = '@Doctrine\\ORM\\Mapping\\Column(name="%s",type="`%s`",nullable=%s' . $unique . ')';
+        $s = '@Doctrine\\ORM\\Mapping\\Column(name="`%s`",type="%s",nullable=%s' . $unique . ')';
         return sprintf($s,GeneratorUtils::propertyToDb($this->name),$this->type,$this->nullable ? "true" : "false");
     }
     
