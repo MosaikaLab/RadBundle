@@ -13,6 +13,8 @@ class RadEntityField{
     
     protected $args;
     
+    protected $length=0;
+    
     protected $nullable=true;
     
     protected $defaultValue;
@@ -82,7 +84,12 @@ class RadEntityField{
         if(!$this->unique){
             $unique = "";
         }
-        $s = '@Doctrine\\ORM\\Mapping\\Column(name="`%s`",type="%s",nullable=%s' . $unique . ')';
+        $length = ",length=" . $this->length;
+        if($this->length == 0){
+            $length = "";
+        }
+
+        $s = '@Doctrine\\ORM\\Mapping\\Column(name="`%s`",type="%s",nullable=%s' . $unique . $length . ')';
         return sprintf($s,GeneratorUtils::propertyToDb($this->name),$this->type,$this->nullable ? "true" : "false");
     }
     
@@ -122,6 +129,23 @@ class RadEntityField{
     public function setType($type)
     {
         $this->type = $type;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getLength()
+    {
+        return $this->length;
+    }
+    
+    /**
+     * @param mixed $type
+     */
+    public function setLength($length)
+    {
+        $this->length = $length;
+        return $this;
     }
     
     /**

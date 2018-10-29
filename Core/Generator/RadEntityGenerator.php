@@ -80,8 +80,20 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    $entityClass = (new ClassType($entity->getName(), $entityNs));
 	    $entityClass->setExtends($modelNs->getName() . "\\" . $modelClass->getName());
 	    
+	    
+	    $indexes = $entity->getIndexes();
+	    $indexString = '';
+	    if(sizeof($indexes) > 0){
+	        $indexString .= ',indexes={';
+	        $is = array();
+	        foreach ($indexes as $i){
+	             $is[] = '@Doctrine\ORM\Mapping\Index(name="'.$i.'_idx", columns={"'.$i.'"})';
+	        }
+	        $indexString .= implode(',', $is);
+	        $indexString .= '}';
+	    }
 	    $entityClass->addComment(
-	    		sprintf('@Doctrine\\ORM\\Mapping\\Table(name="%s")',$entity->getTableName())
+	    		sprintf('@Doctrine\\ORM\\Mapping\\Table(name="%s"%s)',$entity->getTableName(),$indexString)
 	    	);
 	    if($entity->getLifeCycle()){
 		    	$entityClass->addComment('@Doctrine\\ORM\\HasLifecycleCallbacks()');
@@ -120,6 +132,12 @@ class RadEntityGenerator extends RadGeneratorBase {
 	            );
 	    }else{
 		    	echo "Skipping file " . $entityPath . PHP_EOL;
+		    	$str = file_get_contents($entityPath);
+		    	$presentIndCount = substr_count($str, '@Doctrine\ORM\Mapping\Index');
+		    	if($presentIndCount < sizeof($indexes)){
+		    	    $s = str_replace('@Doctrine\ORM\Mapping\Table(name="'.$entity->getTableName().'")', '@Doctrine\ORM\Mapping\Table(name="'.$entity->getTableName().'"'.$indexString.')', $str);
+		    	    file_put_contents($entityPath, $s);
+		    	}
 	    }
 	    if(true || !file_exists($formPath)){
 		    	//$this->runCommand(["command" => "generate:doctrine:form","entity" => $entity->getDoctrineName()]);

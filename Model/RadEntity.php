@@ -14,11 +14,13 @@ class RadEntity extends RadClassable{
      */
     protected $repository;
     
+    protected $indexes;
     
     
     public function __construct($name, $namespace, $bundle){
     	parent::__construct($name,$namespace,$bundle);
         $this->fields = [];
+        $this->indexes = [];
         
         $this->tableName = strtolower($name);
     }
@@ -29,6 +31,21 @@ class RadEntity extends RadClassable{
     public function getDoctrineName(){
     		return $this->bundle . ":" . ($this->namespace ? $this->namespace . "\\" : "") . $this->name;
     }
+    
+    /**
+     * 
+     * @param string $field
+     * @return \Mosaika\RadBundle\Model\RadEntity
+     */
+    public function addIndex($field){
+        $this->indexes[] = $field;
+        return $this;
+    }
+    
+    public function getIndexes(){
+        return $this->indexes;
+    }
+    
     
     /**
      * 
