@@ -88,8 +88,11 @@ class RadEntityField{
         if($this->length == 0){
             $length = "";
         }
-
-        $s = '@Doctrine\\ORM\\Mapping\\Column(name="`%s`",type="%s",nullable=%s' . $unique . $length . ')';
+        $def = $this->getColumnDefinition();
+        if($def){
+            $def = sprintf(",columnDefinition=\"%s\"",$def);
+        }
+        $s = '@Doctrine\\ORM\\Mapping\\Column(name="`%s`",type="%s",nullable=%s' . $unique . $length . $def . ')';
         return sprintf($s,GeneratorUtils::propertyToDb($this->name),$this->type,$this->nullable ? "true" : "false");
     }
     
@@ -98,6 +101,9 @@ class RadEntityField{
         return $this;
     }
     
+    public function getColumnDefinition(){
+        return null;    // Can be overriden
+    }
     
     /**
      * @return mixed
