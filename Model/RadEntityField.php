@@ -11,6 +11,8 @@ class RadEntityField{
     
     protected $type;
     
+    protected $columnName;
+    
     protected $args;
     
     protected $length=0;
@@ -92,8 +94,10 @@ class RadEntityField{
         if($def){
             $def = sprintf(",columnDefinition=\"%s\"",$def);
         }
+        $cname = $this->columnName ? $this->columnName : GeneratorUtils::propertyToDb($this->name);
+
         $s = '@Doctrine\\ORM\\Mapping\\Column(name="`%s`",type="%s",nullable=%s' . $unique . $length . $def . ')';
-        return sprintf($s,GeneratorUtils::propertyToDb($this->name),$this->type,$this->nullable ? "true" : "false");
+        return sprintf($s,$cname,$this->type,$this->nullable ? "true" : "false");
     }
     
     public function setNullable($nullable){
@@ -135,6 +139,23 @@ class RadEntityField{
     public function setType($type)
     {
         $this->type = $type;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getColumnName()
+    {
+        return $this->columnName;
+    }
+    
+    /**
+     * @param mixed $columnName
+     */
+    public function setColumnName($columnName)
+    {
+        $this->columnName = $columnName;
+        return $this;
     }
     
     /**
