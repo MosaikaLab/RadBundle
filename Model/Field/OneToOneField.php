@@ -6,10 +6,11 @@ use Mosaika\RadBundle\Utils\GeneratorUtils;
 
 class OneToOneField extends RadEntityField{
 
-    public static function create($name,$ref,$mappedBy=null){
+    public static function create($name,$ref,$mappedBy=null,$inversedBy=null){
         return (new self($name,"oto"))
         ->addArg("ref",$ref)
         ->addArg("mappedBy",$mappedBy)
+        ->addArg("inversedBy",$inversedBy)
         ;
     }
     public function getPhpType(){
@@ -33,10 +34,14 @@ class OneToOneField extends RadEntityField{
 	    
     }
     public function getAnnotations(){
-    	$mappedBy = $this->getArg("mappedBy");
+        $mappedBy = $this->getArg("mappedBy");
+        $inversedBy = $this->getArg("inversedBy");
         $s = "@Doctrine\ORM\Mapping\OneToOne(cascade={\"persist\"}, targetEntity=\"" . $this->getArg("ref") . "\"";
         if($mappedBy){
-        		$s .= sprintf(',mappedBy="%s"',$mappedBy);
+            $s .= sprintf(',mappedBy="%s"',$mappedBy);
+        }
+        if($inversedBy){
+            $s .= sprintf(',inversedBy="%s"',$inversedBy);
         }
         $s .= ")";
 
