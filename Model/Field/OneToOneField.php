@@ -34,7 +34,7 @@ class OneToOneField extends RadEntityField{
     }
     public function getAnnotations(){
     	$mappedBy = $this->getArg("mappedBy");
-        $s = "@Doctrine\ORM\Mapping\OneToOne(targetEntity=\"" . $this->getArg("ref") . "\"";
+        $s = "@Doctrine\ORM\Mapping\OneToOne(cascade={\"persist\"}, targetEntity=\"" . $this->getArg("ref") . "\"";
         if($mappedBy){
         		$s .= sprintf(',mappedBy="%s"',$mappedBy);
         }
