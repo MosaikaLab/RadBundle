@@ -5,9 +5,8 @@ use Mosaika\RadBundle\Model\RadEntityField;
 
 class IdField extends RadEntityField{
     
-    public static function create($name="id",$strategy="AUTO"){
-        $this->strategy = strtoupper($strategy);
-        return new self($name,"id");
+    public static function create($name="id",$args=array("strategy"=>"AUTO")){
+        return new self($name,"id", $args);
     }
     public function getPhpType(){
         return "integer";
@@ -27,10 +26,10 @@ class IdField extends RadEntityField{
             'UUID',
         ];
 
-        if( in_array( $this->strategy, $allowedStrategies ) ){
-            $annotations[] = "@Doctrine\ORM\Mapping\\GeneratedValue(strategy=\"".$this->strategy."\")";
+        if( $this->getArg('strategy') != null && in_array( $this->getArg('strategy'), $allowedStrategies ) ){
+            $annotations[] = "@Doctrine\ORM\Mapping\\GeneratedValue(strategy=\"".$this->getArg('strategy')."\")";
         }
-        
+
         return $annotations;
     }
 }

@@ -25,8 +25,6 @@ class RadEntityField{
     
     protected $unique=false;
 
-    protected $strategy;
-    
     public function getAnnotations(){
 	    	return [];
     }
