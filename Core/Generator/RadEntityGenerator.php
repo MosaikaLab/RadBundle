@@ -88,18 +88,37 @@ class RadEntityGenerator extends RadGeneratorBase {
 	        $is = array();
 	        foreach( $indexes as $i ){
 	        	if( is_array( $i ) ){
-	        		if( !array_key_exists( 'column', $i ) ){
+	        		if( !array_key_exists( 'columns', $i ) ){
 					    $err = "Missing columns specification for index '".json_encode($i)."'";
 					    throw new \Exception( $err ); 
+	        		}
+	        		else if( array_key_exists( 'flags', $i ) ){
+	        			//stop flags with unallowed multiple columns indexes: 
+	        			if( strpos( $i[ 'columns' ], "," ) !== false ){
+	        				$flagsAllowingMultiColumns = [
+	        					"fulltext",
+	        					"here_other_you_wish",
+	        				];
+
+	        				if( !in_array( $i[ 'flags' ], $flagsAllowingMultiColumns ) ){
+							    $err = "Flags '".$i[ 'flags' ]."' doesn't allow multiple columns";
+							    throw new \Exception( $err ); 
+	        				}
+	        			}
 	        		}
 
 	        		$otherAttribs = [];
 	        		foreach( $i as $otherAttrib => $otherAttribValue ){
-	        			if( $otherAttrib != 'column' ){
+	        			if( $otherAttrib != 'columns' ){
 	        				$otherAttribs[] = $otherAttrib.'={"'.$otherAttribValue.'"}';
 	        			}
 	        		}
-	        		$is[] = '@Doctrine\ORM\Mapping\Index(name="'.$i[ 'column' ].'_idx", columns={"'.$i[ 'column' ].'"}, '.implode(", ", $otherAttribs).')';
+
+        			$columns = explode( ",", $i[ 'columns' ] );
+        			foreach( $columns as $col => $colName ){
+        				$columns[ $col ] = '"'.$colName.'"';
+        			}
+					$is[] = '@Doctrine\ORM\Mapping\Index(name="'.str_replace(",","_",$i[ 'columns' ]).'_idx", columns={'.implode(",",$columns).'}, '.implode(", ", $otherAttribs).')';
 	        	}
 	        	elseif ( is_string($i) ){
 	        		//keep old default method: ...->addIndex( "column_target_name" ), 
