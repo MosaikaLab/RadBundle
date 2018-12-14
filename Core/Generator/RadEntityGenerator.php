@@ -109,8 +109,11 @@ class RadEntityGenerator extends RadGeneratorBase {
 	        $indexString .= implode(',', $is);
 	        $indexString .= '}';
 	    }
+
+		$tableOptions = $entity->getTableOptions();
+
 	    $entityClass->addComment(
-	    		sprintf('@Doctrine\\ORM\\Mapping\\Table(name="%s"%s)',$entity->getTableName(),$indexString)
+	    		sprintf('@Doctrine\\ORM\\Mapping\\Table(name="%s"%s, '.$tableOptions.')',$entity->getTableName(),$indexString)
 	    	);
 	    if($entity->getLifeCycle()){
 		    	$entityClass->addComment('@Doctrine\\ORM\\HasLifecycleCallbacks()');
@@ -142,11 +145,8 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    
 	    // Write Entity class - Doesnt 
 	    if(!file_exists($entityPath)){
-		    	echo "Writing file " . $entityPath . PHP_EOL;
-	        file_put_contents(
-	            $entityPath,
-	            "<?php" . PHP_EOL . $entityNs . $entityClass
-	            );
+		    echo "Writing file " . $entityPath . PHP_EOL;
+	        file_put_contents( $entityPath, "<?php" . PHP_EOL . $entityNs . $entityClass );
 	    }else{
 		    	echo "Skipping file " . $entityPath . PHP_EOL;
 		    	$str = file_get_contents($entityPath);
