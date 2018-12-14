@@ -86,8 +86,25 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    if(sizeof($indexes) > 0){
 	        $indexString .= ',indexes={';
 	        $is = array();
-	        foreach ($indexes as $i){
-	             $is[] = '@Doctrine\ORM\Mapping\Index(name="'.$i.'_idx", columns={"'.$i.'"})';
+	        foreach( $indexes as $i ){
+	        	if( is_array( $i ) ){
+	        		if( !array_key_exists( 'column', $i ) ){
+					    $err = "Missing columns specification for index '".json_encode($i)."'";
+					    throw new \Exception( $err ); 
+	        		}
+
+	        		$otherAttribs = [];
+	        		foreach( $i as $otherAttrib => $otherAttribValue ){
+	        			if( $otherAttrib != 'column' ){
+	        				$otherAttribs[] = $otherAttrib.'={"'.$otherAttribValue.'"}';
+	        			}
+	        		}
+	        		$is[] = '@Doctrine\ORM\Mapping\Index(name="'.$i[ 'column' ].'_idx", columns={"'.$i[ 'column' ].'"}, '.implode(", ", $otherAttribs).')';
+	        	}
+	        	elseif ( is_string($i) ){
+	        		//keep old default method: ...->addIndex( "column_target_name" ), 
+	             	$is[] = '@Doctrine\ORM\Mapping\Index(name="'.$i.'_idx", columns={"'.$i.'"})';
+	        	}
 	        }
 	        $indexString .= implode(',', $is);
 	        $indexString .= '}';
