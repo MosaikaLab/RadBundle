@@ -88,14 +88,53 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    if(sizeof($indexes) > 0){
 	        $indexString .= ',indexes={';
 	        $is = array();
-	        foreach ($indexes as $i){
-	             $is[] = '@Doctrine\ORM\Mapping\Index(name="'.$i.'_idx", columns={"'.$i.'"})';
+	        foreach( $indexes as $i ){
+	        	if( is_array( $i ) ){
+	        		if( !array_key_exists( 'columns', $i ) ){
+					    $err = "Missing columns specification for index '".json_encode($i)."'";
+					    throw new \Exception( $err ); 
+	        		}
+	        		else if( array_key_exists( 'flags', $i ) ){
+	        			//stop flags with unallowed multiple columns indexes: 
+	        			if( strpos( $i[ 'columns' ], "," ) !== false ){
+	        				$flagsAllowingMultiColumns = [
+	        					"fulltext",
+	        					"here_other_you_wish",
+	        				];
+
+	        				if( !in_array( $i[ 'flags' ], $flagsAllowingMultiColumns ) ){
+							    $err = "Flags '".$i[ 'flags' ]."' doesn't allow multiple columns";
+							    throw new \Exception( $err ); 
+	        				}
+	        			}
+	        		}
+
+	        		$otherAttribs = [];
+	        		foreach( $i as $otherAttrib => $otherAttribValue ){
+	        			if( $otherAttrib != 'columns' ){
+	        				$otherAttribs[] = $otherAttrib.'={"'.$otherAttribValue.'"}';
+	        			}
+	        		}
+
+        			$columns = explode( ",", $i[ 'columns' ] );
+        			foreach( $columns as $col => $colName ){
+        				$columns[ $col ] = '"'.$colName.'"';
+        			}
+					$is[] = '@Doctrine\ORM\Mapping\Index(name="'.str_replace(",","_",$i[ 'columns' ]).'_idx", columns={'.implode(",",$columns).'}, '.implode(", ", $otherAttribs).')';
+	        	}
+	        	elseif ( is_string($i) ){
+	        		//keep old default method: ...->addIndex( "column_target_name" ), 
+	             	$is[] = '@Doctrine\ORM\Mapping\Index(name="'.$i.'_idx", columns={"'.$i.'"})';
+	        	}
 	        }
 	        $indexString .= implode(',', $is);
 	        $indexString .= '}';
 	    }
+
+		$tableOptions = $entity->getTableOptions();
+
 	    $entityClass->addComment(
-	    		sprintf('@Doctrine\\ORM\\Mapping\\Table(name="%s"%s)',$entity->getTableName(),$indexString)
+	    		sprintf('@Doctrine\\ORM\\Mapping\\Table(name="%s"%s, '.$tableOptions.')',$entity->getTableName(),$indexString)
 	    	);
 	    if($entity->getLifeCycle()){
 		    	$entityClass->addComment('@Doctrine\\ORM\\HasLifecycleCallbacks()');
@@ -127,11 +166,8 @@ class RadEntityGenerator extends RadGeneratorBase {
 	    
 	    // Write Entity class - Doesnt 
 	    if(!file_exists($entityPath)){
-		    	echo "Writing file " . $entityPath . PHP_EOL;
-	        file_put_contents(
-	            $entityPath,
-	            "<?php" . PHP_EOL . $entityNs . $entityClass
-	            );
+		    echo "Writing file " . $entityPath . PHP_EOL;
+	        file_put_contents( $entityPath, "<?php" . PHP_EOL . $entityNs . $entityClass );
 	    }else{
 		    	echo "Skipping file " . $entityPath . PHP_EOL;
 		    	$str = file_get_contents($entityPath);

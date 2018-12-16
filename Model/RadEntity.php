@@ -6,6 +6,8 @@ class RadEntity extends RadClassable{
     protected $fields;
     
     protected $tableName;
+
+    protected $tableOtions;
     
     protected $tablePrefix;
     
@@ -76,6 +78,10 @@ class RadEntity extends RadClassable{
     		return $this->fields[$key];
     }
     
+    /**
+     * @param array $tableName 
+     * @return this
+     */
     public function setTableName($tableName){
         $this->tableName = $tableName;
         return $this;
@@ -102,6 +108,37 @@ class RadEntity extends RadClassable{
         return $this;
     }
     
+    /**
+     * @param array $tableOtions 
+     * @return this
+     */
+    public function setTableOptions($tableOtions){
+        $tableOtions = !is_array($tableOtions) ? [] : $tableOtions;
+        $this->tableOtions = $tableOtions;
+        return $this;
+    }
+    
+    /**
+     * @param boolean $asORMString
+     * @return string
+     */
+    public function getTableOptions( $asORMString=true ){
+        $tableOtions = !is_array( $this->tableOtions ) ? [] : $this->tableOtions;
+        
+        if( $asORMString ){
+            //return as ORM Format String 'options'
+            $options = [];
+            foreach( $tableOtions as $tableOtion => $tableOtionValue ){
+                $options[] = '"'.$tableOtion .'":"'.$tableOtionValue.'"';
+            }
+            return count($options) > 0 ? (' options={'.implode(", ", $options).'}' ) : '';
+        }
+        else{
+            //return simply as array
+            return $tableOtions;
+        }
+    }
+
     /**
      * @return boolean
      */
@@ -151,8 +188,5 @@ class RadEntity extends RadClassable{
         $this->repository->setFullClass($this->getFullClass() . "Repository");
         return $this->repository;
     }
-
-    
-    
 }
 
