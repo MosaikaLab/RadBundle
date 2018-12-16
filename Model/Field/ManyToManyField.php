@@ -48,7 +48,7 @@ class ManyToManyField extends RadEntityField{
     public function getAnnotations(){
         $mappedBy = $this->getArg("mappedBy");
         $inversedBy= $this->getArg("inversedBy");
-        $joinName= $this->getArg("joinName");
+        $joinName= $this->getTableName() . "_" . $this->getArg("joinName");
         $s = "@Doctrine\ORM\Mapping\ManyToMany(cascade={\"persist\",\"detach\"}, targetEntity=\"" . $this->getArg("ref") . "\"";
         if($mappedBy){
             $s .= sprintf(',mappedBy="%s"',$mappedBy);
@@ -57,7 +57,7 @@ class ManyToManyField extends RadEntityField{
         }elseif($inversedBy){
             $s .= sprintf(',inversedBy="%s"',$inversedBy);
             $s .= ")";
-            $j = "Doctrine\ORM\Mapping\JoinTable(name=\"".$joinName."\")";
+            $j = "@Doctrine\ORM\Mapping\JoinTable(name=\"".$joinName."\")";
             return [$s,$j];
         }        
     }

@@ -70,13 +70,14 @@ class RadGenerator{
      */
     public function addEntity($entity,$key){
    	 	if(!$entity->getBundle()){
-	    		$entity->setBundle($this->bundle);
-	    	}
-	    	$this->entities[$key] = $entity;
-	    	if($this->tablePrefix){
-	    		$entity->setTableName($this->tablePrefix . $entity->getTableName());
-	    	}
-	    	return $this;
+			$entity->setBundle($this->bundle);
+		}
+		$this->entities[$key] = $entity;
+		if($this->tablePrefix){
+			$entity->setTablePrefix($this->tablePrefix);
+			$entity->setTableName($this->tablePrefix . $entity->getTableName());
+		}
+		return $this;
     }
     
     public function tableName($name){

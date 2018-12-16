@@ -51,6 +51,8 @@ class RadEntityGenerator extends RadGeneratorBase {
 		    	$constructor->addBody("parent::__construct();");
 	    }
 	    foreach($entity->getFields() as $field){
+			$field->setTablePrefix($entity->getTablePrefix());
+			$field->setTableName($entity->getTableName());
 	        $name = $field->getName();
 	        $value = $field->getDefaultValue();
 	        $phpType = $field->getPhpType();

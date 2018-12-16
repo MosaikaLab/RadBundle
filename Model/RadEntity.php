@@ -7,6 +7,8 @@ class RadEntity extends RadClassable{
     
     protected $tableName;
     
+    protected $tablePrefix;
+    
     protected $lifeCycle;
     
     /**
@@ -83,6 +85,21 @@ class RadEntity extends RadClassable{
      */
     public function getTableName(){
         return $this->tableName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTablePrefix(){
+        return $this->tablePrefix;
+    }
+
+    /**
+     * @return self
+     */
+    public function setTablePrefix($tp){
+        $this->tablePrefix = $tp;
+        return $this;
     }
     
     /**

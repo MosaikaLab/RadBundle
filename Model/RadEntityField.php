@@ -7,6 +7,10 @@ use Mosaika\RadBundle\Model\Controller\Action\ListActionConfig;
 
 class RadEntityField{
     
+    protected $tablePrefix;
+
+    protected $tableName;
+
     protected $name;
     
     protected $type;
@@ -139,6 +143,36 @@ class RadEntityField{
     public function setType($type)
     {
         $this->type = $type;
+    }
+    /**
+     * @return mixed
+     */
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
+    /**
+     * @param mixed $tableName
+     */
+    public function setTableName($tableName)
+    {
+        $this->tableName = $tableName;
+    }
+    /**
+     * @return mixed
+     */
+    public function getTablePrefix()
+    {
+        return $this->tablePrefix;
+    }
+
+    /**
+     * @param mixed $tablePrefix
+     */
+    public function setTablePrefix($tablePrefix)
+    {
+        $this->tablePrefix = $tablePrefix;
     }
     
     /**
