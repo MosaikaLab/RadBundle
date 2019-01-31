@@ -53,6 +53,27 @@ class {{ name }}{
 		}
 		return implode('_', $ret);
 	}
+
+	/**
+	 * 
+	 * @param array $array
+	 * @return {{entity.fullClass}}
+	 */
+	public function unserializeArray($array, $entity=null){
+		if(!$entity){
+			if(isset($array["id"]) && intval($array["id"]) > 0){
+				$entity = $this->repository->find(intval($array["id"]));
+			}else{
+				$entity = new {{ entity.fullClass }};
+			}
+		}
+		foreach($array as $fieldName => $value){
+			$method = "set" . ucfirst($this->dbToProperty($fieldName));
+			$entity->$method($value);
+		}
+		return $entity;
+	}
+
 	/**
 	 * 
 	 * @param array $array
