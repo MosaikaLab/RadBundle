@@ -69,7 +69,9 @@ class {{ name }}{
 		}
 		foreach($array as $fieldName => $value){
 			$method = "set" . ucfirst($this->dbToProperty($fieldName));
-			$entity->$method($value);
+			if(method_exists($entity, $method)){
+				$entity->$method($value);
+			}
 		}
 		return $entity;
 	}
