@@ -48,8 +48,6 @@ class RadSerializerGenerator extends RadGeneratorBase {
 	    $abstractDir = $this->getWorkingPath("AbstractSerializer");
 	    $dir = $this->getWorkingPath("Serializer");
 	    
-	    echo $dir . PHP_EOL;
-	    echo $abstractDir. PHP_EOL;
 	    
 		$this->createDirs($abstractDir, $dir);
 		
