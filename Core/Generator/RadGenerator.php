@@ -78,7 +78,17 @@ class RadGenerator{
 			$entity->setTableName($this->tablePrefix . $entity->getTableName());
 		}
 		return $this;
-    }
+	}
+	
+	/**
+	 * Undocumented function
+	 *
+	 * @param string $slug
+	 * @return RadEntity
+	 */
+	public function getEntity($slug){
+		return $this->entities[$slug];
+	}
     
     public function tableName($name){
         return $this->tablePrefix . $name;
