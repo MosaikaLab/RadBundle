@@ -1,0 +1,45 @@
+
+namespace {{ns}};
+use Mosaika\RadBundle\BaseApiInput;
+use Mosaika\RadBundle\ApiRequestInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+class {{name}} extends BaseApiInput implements ApiRequestInterface
+{
+    /**
+     * @return array
+     */
+    public function all()
+    {
+        $res = array();
+    {% for field in input.input|default([]) %}
+    $res["{{field.name}}"] = $this->get("{{field.name}}");
+    {% endfor %}
+    return $res;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isValid()
+    {
+        $result = true;
+        
+    {% for field in input.input|default([]) %}{% if field.isRequired() %}
+    $result = $result && $this->has("{{field.name}}");
+    {% endif %}{% endfor %}
+
+        return $result;
+    }
+
+    {% for field in input.input|default([]) %}
+/**
+     * @return {{field.type}}
+     */
+     public function get{{field.name|capitalize}}(){
+        return $this->get("{{field.name}}");
+    }
+    
+    {% endfor %}
+
+}

@@ -1,11 +1,14 @@
 <?php
 namespace Mosaika\RadBundle\Core\Generator;
 
+use Symfony\Component\Yaml\Yaml;
 use Mosaika\RadBundle\Model\RadEntity;
 use Mosaika\RadBundle\Model\RadController;
 use Mosaika\RadBundle\Model\RadEntityRepository;
-use Mosaika\RadBundle\Model\Controller\RestController;
 use Symfony\Component\DependencyInjection\Container;
+use Mosaika\RadBundle\Model\Controller\RestController;
+use Mosaika\RadBundle\Model\RadApiInput;
+
 class RadGenerator{
     protected $container;
 
@@ -30,7 +33,9 @@ class RadGenerator{
     
     protected $tablePrefix = "";
     
-    protected $bundle;
+	protected $bundle;
+	
+	protected $apiInputs;
     
     
     public function __construct($container){
@@ -39,6 +44,7 @@ class RadGenerator{
         $this->controllers = [];
         $this->repositories = [];
         $this->javascriptClients = [];
+        $this->apiInputs = [];
     }
     /**
      * 
@@ -99,6 +105,7 @@ class RadGenerator{
     		$this->_commit(RadFormGenerator::get($this->container), $this->entities);
     		$this->_commit(RadSerializerGenerator::get($this->container), $this->entities);
     		$this->_commit(RadControllerGenerator::get($this->container), $this->controllers);
+    		$this->_commit(RadApiInputGenerator::get($this->container), $this->apiInputs);
 	   	$this->_commit(RadEntityRepositoryGenerator::get($this->container), $this->repositories);
     }
     
@@ -169,8 +176,20 @@ echo PHP_EOL . PHP_EOL . "Committing " . get_class($generator) . PHP_EOL;
 		return $this->container;
 	}
 
-	
-    
+	public function addApiInputFromYaml($filename, $name=null){
+		$data = Yaml::parse(file_get_contents($filename));
+		$name = $name ? $name : str_replace(array(".yaml",".yml"),"",basename($filename));
+		foreach($data as $method => $config){
+			$className = ucfirst($name) . ucfirst($method) . "ApiInput";
+			$i = new RadApiInput($className,"App\Request\Api",$this->bundle);
+			$i
+			->setApiName($name)
+			->setApiMethod($method)
+			->setConfig($config);
+
+			$this->apiInputs[] = $i;
+		}
+	}
 }
 
 ?>
