@@ -134,10 +134,13 @@ class RadEntityGenerator extends RadGeneratorBase {
 		$tableOptions = $entity->getTableOptions();
 
 	    $entityClass->addComment(
-	    		sprintf('@Doctrine\\ORM\\Mapping\\Table(name="%s"%s, '.$tableOptions.')',$entity->getTableName(),$indexString)
-	    	);
+			sprintf('@Doctrine\\ORM\\Mapping\\Table(name="%s"%s, '.$tableOptions.')',$entity->getTableName(),$indexString)
+		);
+        if($entity->getExclusionPolicy()){
+            $modelClass->addComment('@JMS\Serializer\Annotation\ExclusionPolicy("'. $entity->getExclusionPolicy() .'")');
+        }
 	    if($entity->getLifeCycle()){
-		    	$entityClass->addComment('@Doctrine\\ORM\\HasLifecycleCallbacks()');
+		    $entityClass->addComment('@Doctrine\\ORM\\HasLifecycleCallbacks()');
 	    }
 	    
 	    $modelDir = $this->getWorkingPath("Model");

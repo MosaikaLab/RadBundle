@@ -12,10 +12,11 @@ class IdField extends RadEntityField{
         return "integer";
     }
     public function getAnnotations(){
-        $annotations = [
+
+        $annotations = array_merge(parent::getAnnotations(), [
             sprintf('@Doctrine\ORM\Mapping\\Column(name="%s",type="integer")',$this->name),
             "@Doctrine\ORM\Mapping\\Id",
-        ];
+        ]);
 
         $allowedStrategies = [ 
             'AUTO',

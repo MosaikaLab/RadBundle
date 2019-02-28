@@ -9,9 +9,9 @@ class StringField extends RadEntityField{
         return new self($name,"string");
     }
     public function getAnnotations(){
-        return [
+        return array_merge(parent::getAnnotations(), [
             $this->getDoctrineColumnAnnotation()
-        ];
+        ]);
     }
     public function getFillFromRequest(){
     		return '$request->get("' . $this->name . '");'; 

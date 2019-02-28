@@ -12,6 +12,8 @@ class RadEntity extends RadClassable{
     protected $tablePrefix;
     
     protected $lifeCycle;
+
+    protected $exclusionPolicy;
     
     /**
      * @var RadEntityRepository
@@ -20,13 +22,20 @@ class RadEntity extends RadClassable{
     
     protected $indexes;
     
-    
     public function __construct($name, $namespace, $bundle){
     	parent::__construct($name,$namespace,$bundle);
         $this->fields = [];
         $this->indexes = [];
         
         $this->tableName = strtolower($name);
+    }
+    
+    /**
+     * @return self
+     */
+    public function excludeAllFromSerializer(){
+        $this->exclusionPolicy = "all";
+        return $this;
     }
     
     /**
@@ -187,6 +196,26 @@ class RadEntity extends RadClassable{
         $this->repository = new RadEntityRepository($this->name . "Repository", $this->namespace, $this->bundle);
         $this->repository->setFullClass($this->getFullClass() . "Repository");
         return $this->repository;
+    }
+
+    /**
+     * Get the value of exclusionPolicy
+     */ 
+    public function getExclusionPolicy()
+    {
+        return $this->exclusionPolicy;
+    }
+
+    /**
+     * Set the value of exclusionPolicy
+     *
+     * @return  self
+     */ 
+    public function setExclusionPolicy($exclusionPolicy)
+    {
+        $this->exclusionPolicy = $exclusionPolicy;
+
+        return $this;
     }
 }
 

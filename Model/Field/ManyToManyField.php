@@ -53,12 +53,16 @@ class ManyToManyField extends RadEntityField{
         if($mappedBy){
             $s .= sprintf(',mappedBy="%s"',$mappedBy);
             $s .= ")";
-            return [$s];
+            return array_merge(parent::getAnnotations(), [
+                $s
+            ]);
         }elseif($inversedBy){
             $s .= sprintf(',inversedBy="%s"',$inversedBy);
             $s .= ")";
             $j = "@Doctrine\ORM\Mapping\JoinTable(name=\"".$joinName."\")";
-            return [$s,$j];
+            return array_merge(parent::getAnnotations(), [
+                $s,$j
+            ]);
         }        
     }
 }

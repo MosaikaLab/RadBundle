@@ -40,7 +40,9 @@ class ManyToOneField extends RadEntityField{
         }
         $s .= ")";
 
-        return [$s];
+        return array_merge(parent::getAnnotations(), [
+            $s
+        ]);
     }
 }
 

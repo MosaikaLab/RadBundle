@@ -10,10 +10,5 @@ class TextField extends StringField{
     public function getPhpType(){
         return "string";
     }
-    public function getAnnotations(){
-        return [
-            $this->getDoctrineColumnAnnotation()
-        ];
-    }
 }
 

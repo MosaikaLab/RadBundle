@@ -29,8 +29,48 @@ class RadEntityField{
     
     protected $unique=false;
 
+    protected $serializerGroups = array();
+
+
+    /**
+     * @return self
+     */
+    public function addSerializerGroup(){
+        $this->serializerGroups = array_merge($this->serializerGroups, func_get_args());
+        return $this;
+    }
+
+
+    /**
+     * Adds a special <never> serializer group
+     *
+     * @return self
+     */
+    public function denySerialize(){
+        return $this->addSerializerGroup("never");
+    }
+
+    /**
+     * Adds a special <always> serializer group
+     *
+     * @return self
+     */
+    public function permitSerialize(){
+        return $this->addSerializerGroup("always");
+    }
+
+    /**
+     * @return string[]
+     */
     public function getAnnotations(){
-	    	return [];
+        $res = array();
+        if(count($this->serializerGroups) > 0){
+            $groups = implode(",",array_map(function($g){
+                return "\"" . $g . "\"";
+            }, $this->serializerGroups));
+            $res[] = "@JMS\Serializer\Annotation\Groups({" . $groups . "})";
+        }
+        return $res;
     }
     /**
      * Returns the class used for the form builder
