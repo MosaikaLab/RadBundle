@@ -19,6 +19,8 @@ use Mosaika\RadBundle\Model\Field\FloatField;
 use Mosaika\RadBundle\Model\Field\BooleanField;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
+use Mosaika\RadBundle\Factory\RadFactory;
+use Mosaika\RadBundle\Model\Field\EnumField;
 
 class RadListenerTest {
 	public function onRadBuild(BuildEvent $event){
