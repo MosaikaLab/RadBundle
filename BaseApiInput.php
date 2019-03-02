@@ -16,7 +16,7 @@ class BaseApiInput
      * @return boolean
      */
     public function has($key){
-        return $this->get($key);
+        return $this->request->get($key)!=null;
     }
 
     /**
