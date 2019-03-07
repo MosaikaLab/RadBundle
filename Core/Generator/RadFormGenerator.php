@@ -28,7 +28,9 @@ class RadFormGenerator extends RadGeneratorBase {
 	}
 	
 	public function commit(RadEntity $entity){
-	    
+	    if(!$entity->getGenerateForm()){
+			return;
+		}
 	    $abstractNs = new PhpNamespace($this->findNamespace("AbstractForm"));
 	    
 	    $abstractNs->addUse("Symfony\Component\Form\AbstractType");

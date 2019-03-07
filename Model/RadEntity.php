@@ -22,6 +22,8 @@ class RadEntity extends RadClassable{
     
     protected $indexes;
     
+    protected $generateForm = true;
+
     public function __construct($name, $namespace, $bundle){
     	parent::__construct($name,$namespace,$bundle);
         $this->fields = [];
@@ -214,6 +216,26 @@ class RadEntity extends RadClassable{
     public function setExclusionPolicy($exclusionPolicy)
     {
         $this->exclusionPolicy = $exclusionPolicy;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of generateForm
+     */ 
+    public function getGenerateForm()
+    {
+        return $this->generateForm;
+    }
+
+    /**
+     * Set the value of generateForm
+     *
+     * @return  self
+     */ 
+    public function setGenerateForm($generateForm)
+    {
+        $this->generateForm = $generateForm;
 
         return $this;
     }
