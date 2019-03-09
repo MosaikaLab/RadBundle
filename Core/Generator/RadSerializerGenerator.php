@@ -9,6 +9,9 @@ use Mosaika\RadBundle\Model\RadController;
 use Mosaika\RadBundle\Model\Query\RadQuery;
 use Mosaika\RadBundle\Model\RadControllerAction;
 use Mosaika\RadBundle\Utils\GeneratorUtils;
+use Mosaika\RadBundle\Model\Field\ManyToManyField;
+use Mosaika\RadBundle\Model\Field\OneToManyField;
+use Mosaika\RadBundle\Model\Field\ManyToOneField;
 
 class RadSerializerGenerator extends RadGeneratorBase {
 	
@@ -31,11 +34,25 @@ class RadSerializerGenerator extends RadGeneratorBase {
 		$ns = $this->findNamespace("Serializer");
 		$name = $entity->getName() . "Serializer";
 		
+		$referencedEntities = array_reduce($entity->getFields(), function($carry, $field){
+			$conf = null;
+			if($field instanceof ManyToManyField || $field instanceof OneToManyField){
+				$conf = array("array" => true, "class" => $field->getArg("ref"));
+			}else if($field instanceof ManyToOneField){
+				$conf = array("array" => false, "class" => $field->getArg("ref"));
+			}
+			if($conf){
+				$carry[$field->getName()] = $conf;
+			}
+			return $carry;
+		}, array());
+
 		$abstractClass = $this->compileTwig("serializer/abstractclass.php.twig", array(
 				"entity" => $entity,
 				"ns" => $abstractNs,
 				"name" => $abstractName,
 				"defaultForm" => $this->findNamespace("Form") . "\\" . $entity->getName() . "Type",
+				"referencedEntities" => $referencedEntities,
 				"helper" => $this,
 		));
 		$class = $this->compileTwig("serializer/class.php.twig", array(

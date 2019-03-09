@@ -13,9 +13,15 @@ class {{ name }}{
 	 * @var ContainerInterface
 	 */
 	protected $container;
-	
+
 	/**
 	 *
+	 * @var \Doctrine\ORM\EntityManagerInterface
+	 */
+	protected $em;
+	
+	/**
+	 * 
 	 */
 	protected $repository;
 	
@@ -25,7 +31,8 @@ class {{ name }}{
 	 */
 	public function __construct(ContainerInterface $container){
 		$this->container = $container;
-		$this->repository = $container->get("doctrine")->getManager()->getRepository({{entity.fullClass}}::class);
+		$this->em = $container->get("doctrine")->getManager();
+		$this->repository = $this->em->getRepository({{entity.fullClass}}::class);
 	}
 	/**
 	 * 
@@ -67,7 +74,22 @@ class {{ name }}{
 				$entity = new {{ entity.fullClass }};
 			}
 		}
+		$references = array();
+		{% for name, ent in referencedEntities %}
+		$references["{{name}}"] = array("array" => {{ent.array ? "true" : "false"}}, "class" => "{{ent.class}}");
+		{% endfor %}
+
 		foreach($array as $fieldName => $value){
+			if(isset($references[$fieldName])){
+				$ref = $references[$fieldName];
+				if($ref["array"]){
+					$value = array_map(function($id) use($ref){
+						return $this->em->getRepository($ref["class"])->find($id);
+					}, $value); 
+				}else if($value && is_numeric($value)){
+					$value = $this->em->getRepository($ref["class"])->find($value);
+				}
+			}
 			$method = "set" . ucfirst($this->dbToProperty($fieldName));
 			if(method_exists($entity, $method)){
 				$entity->$method($value);
