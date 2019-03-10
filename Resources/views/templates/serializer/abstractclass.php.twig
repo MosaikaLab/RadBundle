@@ -76,18 +76,64 @@ class {{ name }}{
 		}
 		$references = array();
 		{% for name, ent in referencedEntities %}
-		$references["{{name}}"] = array("array" => {{ent.array ? "true" : "false"}}, "class" => "{{ent.class}}");
+$references["{{name}}"] = array("doctrine" => {{ent.array ? "true" : "false"}}, "array" => {{ent.array ? "true" : "false"}}, "class" => "{{ent.class}}");
 		{% endfor %}
 
 		foreach($array as $fieldName => $value){
+			$ref = null;
 			if(isset($references[$fieldName])){
 				$ref = $references[$fieldName];
-				if($ref["array"]){
-					$value = array_map(function($id) use($ref){
-						return $this->em->getRepository($ref["class"])->find($id);
-					}, $value); 
-				}else if($value && is_numeric($value)){
-					$value = $this->em->getRepository($ref["class"])->find($value);
+			}else if(isset($references[$this->dbToProperty($fieldName)])){
+				$ref = $references[$this->dbToProperty($fieldName)];
+			}
+			if($ref){
+				if(isset($ref["doctrine"]) && $ref["doctrine"]){
+					if($ref["array"]){
+						$value = array_map(function($id) use($ref){
+							if($id && is_array($id)){
+								// Se ricevo un array che descrive l'oggetto, 
+								// lo carico tramite il serializer di riferimento
+								$serializerClass = substr(str_replace("Entity","Serializer",$ref["class"]) . "Serializer",1);
+								$serializer = $this->container->get($serializerClass);
+								return $serializer->unserializeArray($id);
+							}
+							return $this->em->getRepository($ref["class"])->find($id);
+						}, $value); 
+					}else if($value && is_numeric($value)){
+						$value = $this->em->getRepository($ref["class"])->find($value);
+					}else if($value && is_array($value)){
+						// Se ricevo un array che descrive l'oggetto, 
+						// lo carico tramite il serializer di riferimento
+						$serializerClass = substr(str_replace("Entity","Serializer",$ref["class"]) . "Serializer",1);
+						$serializer = $this->container->get($serializerClass);
+						$value = $serializer->unserializeArray($value);
+					}
+				}else{
+					if(isset($ref["helper"])){
+
+					}else{
+						$cls = $ref["class"];
+						switch($cls){
+							case '\DateTime':
+								if(!$value)
+									$value = null;
+								if(is_numeric($value)){
+									$d = new \Datetime();
+									$d->setTimestamp($value);
+									$value = $d;
+								}else{
+									$date = \DateTime::createFromFormat("Y-m-d\TH:i",$value);
+									if(!$date){
+										$date = new \DateTime($value);
+									}
+									$value = $date ? $date : null;
+
+								}
+								break;
+							default: 
+								$value = new $cls($value);
+						}
+					}
 				}
 			}
 			$method = "set" . ucfirst($this->dbToProperty($fieldName));

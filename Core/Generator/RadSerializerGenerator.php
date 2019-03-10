@@ -12,6 +12,8 @@ use Mosaika\RadBundle\Utils\GeneratorUtils;
 use Mosaika\RadBundle\Model\Field\ManyToManyField;
 use Mosaika\RadBundle\Model\Field\OneToManyField;
 use Mosaika\RadBundle\Model\Field\ManyToOneField;
+use Mosaika\RadBundle\Model\Field\DateField;
+use Mosaika\RadBundle\Model\Field\DateTimeField;
 
 class RadSerializerGenerator extends RadGeneratorBase {
 	
@@ -37,9 +39,11 @@ class RadSerializerGenerator extends RadGeneratorBase {
 		$referencedEntities = array_reduce($entity->getFields(), function($carry, $field){
 			$conf = null;
 			if($field instanceof ManyToManyField || $field instanceof OneToManyField){
-				$conf = array("array" => true, "class" => $field->getArg("ref"));
+				$conf = array("doctrine" => true, "array" => true, "class" => $field->getArg("ref"));
 			}else if($field instanceof ManyToOneField){
-				$conf = array("array" => false, "class" => $field->getArg("ref"));
+				$conf = array("doctrine" => true, "array" => false, "class" => $field->getArg("ref"));
+			}else if($field instanceof DateField || $field instanceof DateTimeField){
+				$conf = array("doctrine" => false, "array" => false, "class" => "\DateTime");
 			}
 			if($conf){
 				$carry[$field->getName()] = $conf;
