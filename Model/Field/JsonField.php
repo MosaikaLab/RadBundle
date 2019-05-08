@@ -3,6 +3,7 @@ namespace Mosaika\RadBundle\Model\Field;
 
 
 use Nette\PhpGenerator\ClassType;
+use Mosaika\RadBundle\Utils\GeneratorUtils;
 
 class JsonField extends TextField{
     
@@ -13,6 +14,16 @@ class JsonField extends TextField{
         return "object";
     }
     
+    public function getAnnotations(){
+        $getter = GeneratorUtils::propertyToMethod(ucfirst($this->name),"get");
+        return array_merge(parent::getAnnotations(), [
+            sprintf(
+                '@JMS\Serializer\Annotation\Accessor(getter="%s")',
+                $getter
+            )
+        ]);
+    }
+
     /**
      * @param ClassType $modelClass
      * {@inheritDoc}
@@ -33,7 +44,12 @@ class JsonField extends TextField{
         
         $keyMethod = $modelClass->addMethod($res[1]->getName())
         ->addComment("@return mixed")
-        ->addBody(sprintf('if(is_string($this->%s)){ $%s = json_decode($this->%s,true); }',$this->name,$this->name,$this->name))
+        ->addBody(sprintf(
+            'if(is_string($this->%s)){ $%s = json_decode($this->%s,true); }',
+            $this->name,
+            $this->name,
+            $this->name
+        ))
         ->addBody(sprintf('else{ $%s = $this->%s; }',$this->name,$this->name))
         ->addBody(sprintf('if(!$key) return $%s;',$this->name)) 
         ->addBody('$parts = explode(".",$key);')
@@ -55,17 +71,21 @@ class JsonField extends TextField{
         
         $putMethod = $modelClass->addMethod("put" . substr($res[1]->getName(),3))
         ->addComment("@return self")
-        ->addBody(sprintf('if(is_string($this->%1$s)){ $%1$s = json_decode($this->%1$s,true); }',$this->name))
+        ->addBody(sprintf(
+            'if(is_string($this->%1$s)){ $%1$s = json_decode($this->%1$s,true); }',
+            $this->name
+        ))
         ->addBody(sprintf('else{ $%1$s = $this->%1$s; }',$this->name))
         ->addBody(sprintf('$loc = &$%1$s;',$this->name))
-        	
-        	->addBody('foreach(explode(".", $key) as $step){')
-        	->addBody("\t" . '$loc = &$loc[$step];')
-        	->addBody('}')
-        	->addBody('$loc = $value;')
-        	->addBody(sprintf('return $this->' . $res[0]->getName() . '($%s);',$this->name))
-        	
-        	;
+        ->addBody('foreach(explode(".", $key) as $step){')
+        ->addBody("\t" . '$loc = &$loc[$step];')
+        ->addBody('}')
+        ->addBody('$loc = $value;')
+        ->addBody(sprintf(
+            'return $this->' . $res[0]->getName() . '($%s);',
+            $this->name
+        ))
+       	;
         
         $putMethod->addParameter("key");
         $putMethod->addParameter("value");
